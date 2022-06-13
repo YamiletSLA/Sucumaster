@@ -7,13 +7,28 @@
 <div>
     <h1 class="caja bg-lg text-center">Editar tarjeta</h1>
     <form action="/Tarjetas/editar" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="id">ID:</label>
-            <input type="number" name="id" value="{{tipopa.idTipoPaggo}}" readonly class="form-control">
+        <div>
+            <input type="hidden" name="id" value="{{current_user.idUsuario}}" >
         </div>
         <div class="form-group">
-            <label for="tipo">Número de tarjeta:</label>
-            <input type="text" name="tipo" required maxlength="60" placeholder="Tipo de Pago" class="form-control" value="{{tipopa.tipo}}">
+            <label for="idT">ID:</label>
+            <input type="number" name="idT" value="{{tar.idTarjeta}}" readonly class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="tar">Número de tarjeta:</label>
+            <input type="number" name="tarjeta" required maxlength="60" placeholder="Número de la tarjeta" class="form-control" value="{{tar.noTarjeta}}">
+        </div>
+        <div class="form-group">
+            <label for="bancoE">Entidad bancaria:</label>
+            <select name="bancoE" id="" class="form-control">
+                <option value="BBVA">BBVA</option>
+                <option value="Bancomer">Banamex</option>
+                <option value="Banorte">Banorte</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="saldo">Saldo:</label>
+            <input type="number" name="saldo" required maxlength="60" placeholder="Saldo" class="form-control" value="{{tar.saldo}}">
         </div>
             <button type="submit" class="btn btn-default2">
                 <span class="glyphicon glyphicon-floppy-disk"></span>
@@ -35,13 +50,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Eliminación del Tipo de Pago</h4>
+        <h4 class="modal-title">Eliminación de Tarjetas</h4>
       </div>
       <div class="modal-body">
-        <p>¿ Estas seguro de eliminar el Tipo de Pago:<b>{{tipopa.tipo}} ?</b> </p>
+        <p>¿ Estas seguro de eliminar la tarjeta:<b>{{tar.noTarjeta}} ?</b> </p>
       </div>
       <div class="modal-footer">
-          <a class="btn btn-primary" href="/Tarjetas/eliminar/{{tipopa.idTipoPago}}">Aceptar</a>
+          <a class="btn btn-primary" href="/Tarjetas/eliminar/{{tar.idTarjeta}}">Aceptar</a>
           <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
       </div>
     </div>

@@ -3,13 +3,13 @@ from urllib import request
 
 from flask import Flask,render_template,request,redirect,url_for,flash,session,abort
 from flask_bootstrap import Bootstrap
-from modelo.Dao import db, Categoria, Producto, Usuario, Tarjetas, Paqueterias, Carrito, Pedidos, DetallePedidos
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos
 from flask_login import login_required,login_user,logout_user,current_user,LoginManager
 import json
 
 app = Flask(__name__)
 Bootstrap(app)
-app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@localhost/shopitesz'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@localhost/sucumaster'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.secret_key='Cl4v3'
 #Implementación de la gestion de usuarios con flask-login
@@ -20,15 +20,11 @@ login_manager.login_message='¡ Tu sesión expiró !'
 login_manager.login_message_category="info"
 
 # Urls defininas para el control de usuario
-@app.before_request
-def before_request():
-    session.permanent=True
-    app.permanent_session_lifetime=timedelta(minutes=10)
 
 @app.route("/")
 def inicio():
     #return "Bienvenido a la tienda en linea Shopitesz"
-    return render_template('usuarios/loin.html')
+    return render_template('usuarios/login.html')
 
 @app.route('/Usuarios/iniciarSesion')
 def mostrar_login():
@@ -141,7 +137,8 @@ def modificarUsuario():
             flash('¡ Usuario editado con exito !')
         except:
             flash('¡ Error al editar el usuario !')
-        if user.tipo == 'Comprador':
+
+        if user.tipo == 'Almacenista':
             return redirect(url_for('consultarClientes'))
         else:
             if user.tipo == 'Vendedor':
@@ -174,35 +171,27 @@ def consultarProductosPorCategoria(id):
     listaProductos=[]
     #Generacion de un diccionario para convertir los datos a JSON
     for prod in lista:
-        prod_dic={'idProducto':prod.idProducto,'nombre':prod.nombre,'descripcion':prod.descripcion,'precio':prod.precioVenta,'existencia':prod.existencia}
+        prod_dic={'idProducto':prod.idProducto,'nombre':prod.nombre,'descripcion':prod.descripcion,'precio':prod.precio}
         listaProductos.append(prod_dic)
     #print(listaProductos)
     var_json=json.dumps(listaProductos)
     return var_json
 
 @app.route('/producto/<int:id>')
-
 def consultarProducto(id):
-    if current_user.is_authenticated and  current_user.is_comprador():
+    if current_user.is_authenticated and  current_user.is_admin():
         prod=Producto()
-        prod=prod.consultaIndividual(id)
-        dict_producto={"idProducto":prod.idProducto,"nombre":prod.nombre,"descripcion":prod.descripcion,"precio":prod.precioVenta,"existencia":prod.existencia}
-        return json.dumps(dict_producto)
+        prod.consultaIndividual(id)
+        return render_template('productos/Modificar.html',prod=prod.consultaIndividual(id))
     else:
         msg={"estatus":"error","mensaje":"Debes iniciar sesion"}
         return json.dumps(msg)
-
-@app.route('/productos/foto/<int:id>')
-def consultarFotoPorducto(id):
-    prod=Producto()
-    return prod.consultarFoto(id)
-
 
 @app.route('/Productos/nuevo')
 @login_required
 def nuevoProducto():
     if current_user.is_authenticated and current_user.is_admin():
-            return render_template('productos/agregarP.html')
+            return render_template('productos/Registrar.html')
     else:
         abort(404)
 
@@ -214,14 +203,10 @@ def agregarProducto():
             if current_user.is_admin():
                 try:
                     prod=Producto()
-                    prod.idCategoria=1
+                    prod.idCategorias=request.form['categoria']
                     prod.nombre=request.form['nombre']
                     prod.descripcion=request.form['desc']
-                    prod.precioVenta=request.form['precio']
-                    prod.existencia=request.form['exist']
-                    prod.foto=request.files['imagen'].stream.read()
-                    prod.especificaciones=request.files['espe'].stream.read()
-                    prod.estatus='Activo'
+                    prod.precio=request.form['precio']
                     prod.agregar()
                     flash('¡ Producto agregada con exito !')
                 except:
@@ -241,16 +226,10 @@ def editarProducto():
     if current_user.is_authenticated and current_user.is_admin():
         try:
             prod=Producto()
-            prod.idCategoria=request.form['idCategoria']
+            prod.idCategorias=request.form['idCategorias']
             prod.nombre=request.form['nombre']
-            prod.descripcion = request.form['descripcion']
-            prod.precioVenta = request.form['precioVenta']
-            prod.existencia = request.form['existencia']
-            prod.estatus = request.form['estatus']
-            imagen=request.files['imagen'].stream.read()
-            if imagen:
-                prod.imagen=imagen
-            prod.estatus=request.values.get("estatus","Inactivo")
+            prod.descripcion = request.form['desc']
+            prod.precio = request.form['precio']
             prod.editar()
             flash('¡ Producto editado con exito !')
         except:
@@ -281,11 +260,6 @@ def consultaCategorias():
     cat=Categoria()
     return render_template('categorias/consultaGeneral.html',categorias=cat.consultaGeneral())
 
-@app.route('/Categorias/consultarImagen/<int:id>')
-def consultarImagenCategoria(id):
-    cat=Categoria()
-    return cat.consultarImagen(id)
-
 
 @app.route('/Categorias/nueva')
 @login_required
@@ -304,8 +278,6 @@ def agregarCategoria():
                 try:
                     cat=Categoria()
                     cat.nombre=request.form['nombre']
-                    cat.imagen=request.files['imagen'].stream.read()
-                    cat.estatus='Activa'
                     cat.agregar()
                     flash('¡ Categoria agregada con exito !')
                 except:
@@ -325,7 +297,7 @@ def agregarCategoria():
 def consultarCategoria(id):
     if current_user.is_authenticated and current_user.is_admin():
         cat=Categoria()
-        return render_template('categorias/editar.html',cat=cat.consultaIndividuall(id))
+        return render_template('categorias/editar.html',cat=cat.consultaIndividual(id))
     else:
         return redirect(url_for('mostrar_login'))
 
@@ -336,12 +308,8 @@ def editarCategoria():
     if current_user.is_authenticated and current_user.is_admin():
         try:
             cat=Categoria()
-            cat.idCategoria=request.form['id']
+            cat.idCategorias=request.form['id']
             cat.nombre=request.form['nombre']
-            imagen=request.files['imagen'].stream.read()
-            if imagen:
-                cat.imagen=imagen
-            cat.estatus=request.values.get("estatus","Inactiva")
             cat.editar()
             flash('¡ Categoria editada con exito !')
         except:
@@ -357,8 +325,8 @@ def eliminarCategoria(id):
     if current_user.is_authenticated and current_user.is_admin():
         try:
             categoria=Categoria()
-            #categoria.eliminar(id)
-            categoria.eliminacionLogica(id)
+            categoria.eliminar(id)
+            #categoria.eliminacionLogica(id)
             flash('Categoria eliminada con exito')
         except:
             flash('Error al eliminar la categoria')
@@ -467,39 +435,35 @@ def error_500(e):
 #TARJETAS
 @app.route('/Tarjetas')
 @login_required
-def consultarTarjetas():
-    if current_user.is_authenticated and current_user.is_comprador():
-        tar = Tarjetas()
-        return render_template('/tarjetas/consultaT.html',tarjetas = tar.consultaTarjeta())
+def consultarTP():
+    if current_user.is_authenticated and current_user.is_admin():
+        ti = tipoPago()
+        return render_template('/tarjetas/consultaT.html',tipopago = ti.consultarTP())
     else:
         abort(404)
 
 @app.route('/Tarjetas/nueva')
 @login_required
-def nuevaTarjetas():
-    if current_user.is_authenticated and current_user.is_comprador():
+def nuevoTP():
+    if current_user.is_authenticated and current_user.is_admin():
             return render_template('tarjetas/agregarT.html')
     else:
         abort(404)
 
 @app.route('/Tarjetas/agregar',methods=['post'])
 @login_required
-def agregarTarjetas():
+def agregarTP():
     try:
         if current_user.is_authenticated:
-            if current_user.is_comprador():
+            if current_user.is_admin():
                 try:
-                    tar=Tarjetas()
-                    tar.idUsuario=request.form['id']
-                    tar.noTarjeta=request.form['tarjeta']
-                    tar.saldo=request.form['saldo']
-                    tar.Banco=request.form['bancoE']
-                    tar.estatus='Activa'
+                    tar=tipoPago()
+                    tar.tipo=request.form['tipo']
                     tar.agregar()
-                    flash('¡ Tarjeta agregada con exito !')
+                    flash('¡ Tipo de pago agregado con exito !')
                 except:
-                    flash('¡ Error al agregar la tarjeta !')
-                return redirect(url_for('consultarTarjetas'))
+                    flash('¡ Error al agregar el Tipo de pago !')
+                return redirect(url_for('consultarTP'))
             else:
                 abort(404)
 
@@ -511,134 +475,86 @@ def agregarTarjetas():
 @app.route('/Tarjetas/editar',methods=['post'])
 @login_required
 def editarTarjeta():
-    if current_user.is_authenticated and current_user.is_comprador():
+    if current_user.is_authenticated and current_user.is_admin():
         try:
-            tar=Tarjetas()
-            tar.idTarjeta=request.form['idT']
-            tar.noTarjeta=request.form['tarjeta']
-            tar.Banco=request.form['bancoE']
-            tar.saldo = request.form['saldo']
-            tar.editar()
-            flash('¡ Tarjeta editada con exito !')
+            ti=tipoPago()
+            ti.idTarjeta=request.form['id']
+            ti.tipo=request.form['tipo']
+            ti.editar()
+            flash('¡ Tipo de Pago editado con exito !')
         except:
-            flash('¡ Error al editar la tarjeta !')
+            flash('¡ Error al editar el Tipo de Pago !')
 
-        return redirect(url_for('consultarTarjetas'))
+        return redirect(url_for('consultarTP'))
     else:
         return redirect(url_for('mostrar_login'))
 
 @app.route('/Tarjetas/<int:id>')
 @login_required
 def consultarTarjeta(id):
-    if current_user.is_authenticated and current_user.is_comprador():
-        tar=Tarjetas()
-        return render_template('tarjetas/editarT.html',tar=tar.consultaIndividuall(id))
+    if current_user.is_authenticated and current_user.is_admin():
+        ti=tipoPago()
+        return render_template('tarjetas/editarT.html',tp=ti.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
 
 @app.route('/Tarjetas/eliminar/<int:id>')
 @login_required
 def eliminarTarjeta(id):
-    if current_user.is_authenticated and current_user.is_comprador():
+    if current_user.is_authenticated and current_user.is_admin():
         try:
-            tar=Tarjetas()
-            tar.eliminar(id)
-            flash('Tarjeta eliminada con exito')
+            ti=tipoPago()
+            ti.eliminar(id)
+            flash('Tipo de Pago eliminado con exito')
         except:
-            flash('Error al eliminar la tarjeta')
-        return redirect(url_for('consultarTarjetas'))
+            flash('Error al eliminar el Tipo de Pago')
+        return redirect(url_for('consultaGeneral'))
     else:
         return redirect(url_for('mostrar_login'))
 
 #PAQUETERÍAS
-@app.route('/Paqueterias')
-@login_required
-def consultarPaqueterias():
-    if current_user.is_authenticated and current_user.is_admin():
-        paq = Paqueterias()
-        return render_template('/paqueterias/consultaP.html', paqueterias=paq.consultaPaqueterias())
-    else:
-        return render_template('/usuarios/login.html')
+@app.route('/Transportes')
+def consultaGeneralTransportes():
+    t=Transportes()
+    return render_template('Transportes/Consultar.html',transportes=t.consultaGeneral())
 
+@app.route('/Transportes/Registrar')
+def RegistrarTransporte():
+    return render_template('Transportes/Registrar.html')
 
-@app.route('/Paqueterias/nueva')
-@login_required
-def nuevaPaqueterias():
-    if current_user.is_authenticated and current_user.is_admin():
-            return render_template('paqueterias/agregarP.html')
-    else:
-        abort(404)
+@app.route('/Transportes/nuevo',methods=['post'])
+def nuevoTransporte():
+    t = Transportes()
+    t.nombre = request.form['nombre']
+    t.telefono=request.form['telefono']
+    t.estatus = 'A'
+    t.agregar()
+    flash('Transporte registrado con exito')
+    return render_template('Transportes/Registrar.html')
 
-@app.route('/Paqueterias/agregar',methods=['post'])
-@login_required
-def agregarPaqueterias():
-    try:
-        if current_user.is_authenticated:
-            if current_user.is_admin():
-                try:
-                    paq=Paqueterias()
-                    paq.nombre=request.form['nombre']
-                    paq.paginaWeb=request.form['paginaWeb']
-                    paq.precioGr=request.form['precio']
-                    paq.Telefono=request.form['telefono']
-                    paq.estatus='Activa'
-                    paq.agregar()
-                    flash('¡ Paqueteria agregada con exito !')
-                except:
-                    flash('¡ Error al agregar la Paqueteria !')
-                return redirect(url_for('consultarPaqueterias'))
-            else:
-                abort(404)
-        else:
-            return redirect(url_for('mostrar_login'))
-    except:
-        abort(500)
+@app.route('/Transportes/<int:id>')
+def ConsultaIndTransportes(id):
+    t = Transportes()
+    return render_template('Transportes/Modificar.html',trans=t.consultaIndividual(id))
 
-@app.route('/Paqueterias/editar',methods=['POST'])
-@login_required
-def editarPaqueteria():
-    if current_user.is_authenticated and current_user.is_admin():
-        try:
-            paq = Paqueterias()
-            paq.idPaqueteria = request.form['id']
-            paq.nombre = request.form['nombre']
-            paq.paginaWeb = request.form['paginaWeb']
-            paq.precioGr = request.form['precioGr']
-            paq.Telefono = request.form['telefono']
-            paq.estatus = 'Activa'
-            paq.editar()
-            flash('¡  Paqueteria editada con exito !')
-        except:
-            flash('¡ Error al editar la  paqueteria!')
+@app.route('/Transportes/Modificar',methods=['post'])
+def ModificarTransportes():
+    t= Transportes()
+    t.idTransportes = request.form['Id']
+    t.nombre = request.form['nombre']
+    t.telefono=request.form['telefono']
+    t.estatus = 'A'
+    t.editar()
+    flash('La modificación del Transporte se realizó con exito')
+    return render_template('Transportes/Modificar.html',trans=t)
 
-        return redirect(url_for('consultarPaqueterias'))
-    else:
-        return redirect(url_for('mostrar_login'))
+@app.route('/Transportes/eliminar/<int:id>')
+def eliminarTransporte(id):
+    t=Transportes()
+    t.eliminar(id)
+    return render_template('Transportes/Consultar.html', transportes=t.consultaGeneral())
 
-@app.route('/Paqueterias/<int:id>')
-@login_required
-def consultarPaqueteria(id):
-    if current_user.is_authenticated:
-        paq=Paqueterias()
-        return render_template('/Paqueterias/editarP.html',paq=paq.consultaIndividuall(id))
-    else:
-        return redirect(url_for('mostrar_login'))
-
-@app.route('/Paqueterias/eliminar/<int:id>')
-@login_required
-def eliminarPaqueteria(id):
-    if current_user.is_authenticated and current_user.is_admin():
-        try:
-            paq=Paqueterias()
-            #paq.eliminacionLogica(id)
-            paq.eliminar(id)
-            flash('Paqueteria eliminada con exito')
-        except:
-            flash('Error al eliminar la Paqueteria')
-        return redirect(url_for('consultarPaqueterias'))
-    else:
-        return redirect(url_for('mostrar_login'))
-
+##############################
 @app.route('/carrito/agregar/<data>',methods=['get'])
 def agregarProductoCarrito(data):
     msg=''

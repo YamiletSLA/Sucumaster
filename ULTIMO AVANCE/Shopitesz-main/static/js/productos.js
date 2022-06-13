@@ -1,8 +1,8 @@
 function obtenerID(){
-    var combo=document.getElementById("categoria");
-    var idCategoria=combo.options[combo.options.selectedIndex].value;
+    var combo=document.getElementById("Categorias");
+    var idCategorias=combo.options[combo.options.selectedIndex].value;
     var ajax=new XMLHttpRequest();
-    var url='/productos/categoria/'+idCategoria;
+    var url='/productos/categoria/'+idCategorias;
     ajax.open('get',url,true);
     ajax.onreadystatechange=function(){
         if(this.readyState==4 && this.status==200){
@@ -78,9 +78,8 @@ function llenarCamposProductos(producto){
         document.getElementById("precio").value=producto.precio;
         document.getElementById("existencia").value=producto.existencia;
         var cantidad=document.getElementById("cantidad").value;
-        document.getElementById("cantidad").setAttribute("max",producto.existencia);
-        document.getElementById("cantidad").setAttribute("onchange","validarCantidad("+producto.existencia+","+producto.precio+")");
-        document.getElementById("imagen").setAttribute("src","/productos/foto/"+producto.idProducto);
+        document.getElementById("cantidad").setAttribute("max",1);
+        document.getElementById("cantidad").setAttribute("onchange","validarCantidad(,"+producto.precio+")");
         document.getElementById("total").value=producto.precio*cantidad;
         document.getElementById("total").style.color="blue";
     }

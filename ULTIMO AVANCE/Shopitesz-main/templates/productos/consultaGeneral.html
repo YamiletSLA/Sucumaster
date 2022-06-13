@@ -12,8 +12,6 @@
             <th>DESCRIPCION</th>
             <th>CATEGORIA</th>
             <th>PRECIO</th>
-            <th>STOCK</th>
-            <th>IMAGEN</th>
             {% if current_user.is_authenticated and current_user.is_admin() %}
             <th>EDITAR</th>
             {% endif %}
@@ -24,12 +22,10 @@
                 <td>{{prod.nombre}}</td>
                 <td>{{prod.descripcion}}</td>
                 <td>{{prod.categoria.nombre}}</td>
-                <td>{{prod.precioVenta}}</td>
-                <td>{{prod.existencia}}</td>
-                <td><img src="/productos/foto/{{prod.idProducto}}"  width="100px" height="100px"></td>
+                <td>{{prod.precio}}</td>
                 {% if current_user.is_authenticated and current_user.is_admin() %}
                 <td>
-                    <a href="/Productos/{{prod.idProducto}}">
+                    <a href="/producto/{{prod.idProducto}}">
                         <span class="glyphicon glyphicon-edit"></span>
                     </a>
                 </td>

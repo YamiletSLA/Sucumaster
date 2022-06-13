@@ -7,7 +7,7 @@ import datetime
 db=SQLAlchemy()
 
 class Categoria(db.Model):
-    __tablename__='categorias'
+    __tablename__='Categorias'
     idCategorias=Column(Integer,primary_key=True)
     nombre=Column(String,unique=True)
 
@@ -32,19 +32,19 @@ class Categoria(db.Model):
         db.session.commit()
 
 class Producto(db.Model):
-    __tablename__='productos'
+    __tablename__='Productos'
     idProducto=Column(Integer,primary_key=True)
-    idCategoria=Column(Integer,ForeignKey('Categorias.idCategoria'))
+    idCategorias=Column(Integer,ForeignKey('Categorias.idCategorias'))
     nombre=Column(String,nullable=False)
     descripcion=Column(String,nullable=True)
     precio=Column(Float,nullable=False)
     categoria=relationship('Categoria',backref='productos',lazy='select')
 
     def consultaGeneral(self):
-        return self.query.filter(Producto.estatus == 'Activo').all()
+        return self.query.all()
 
     def consultarProductosPorCategoria(self, idCategorias):
-        return self.query.filter(Producto.idCategorias == idCategorias, Producto.estatus == 'Activo').all()
+        return self.query.filter(Producto.idCategorias == idCategorias).all()
 
     def consultaIndividual(self,id):
         return Producto.query.get(id)
@@ -54,24 +54,14 @@ class Producto(db.Model):
         db.session.commit()
 
     def eliminar(self,id):
-        prod=self.consultaIndividuall(id)
+        prod=self.consultaIndividual(id)
         db.session.delete(prod)
         db.session.commit()
-
-    def consultarFoto(self, id):
-        return self.consultaIndividual(id).foto
-
-    def consultaIndividuall(self,id):
-        return Producto.query.get(id)
 
     def editar(self):
         db.session.merge(self)
         db.session.commit()
 
-    def eliminacionLogica(self, id):
-        tar = self.consultaIndividual(id)
-        tar.estatus = 'Inactivo'
-        tar.editar()
 
 class Usuario(UserMixin,db.Model):
     __tablename__='usuario'
@@ -114,7 +104,7 @@ class Usuario(UserMixin,db.Model):
     def get_id(self):
         return self.idUsuario
 
-    def is_administrador(self):
+    def is_admin(self):
         if self.tipoUsuario=='Administrador':
             return True
         else:
@@ -198,16 +188,12 @@ class Pedidos(db.Model):
         ped.estatus='Cancelado'
         ped.editar()
 
-class Tarjetas(db.Model):
-    __tablename__='tarjetas'
-    idTarjeta=Column(Integer,primary_key=True)
-    idUsuario=Column(Integer, ForeignKey('Usuarios.idUsuario'))
-    saldo=Column(Float, nullable=False)
-    noTarjeta=Column(String, nullable=False)
-    Banco=Column(String, nullable=False)
-    estatus=Column(String, nullable=False)
+class tipoPago(db.Model):
+    __tablename__='TipoPago'
+    idTipoPago=Column(Integer,primary_key=True)
+    tipo=Column(String, nullable=False)
 
-    def consultaTarjeta(self):
+    def consultarTP(self):
         return self.query.all()
 
     def agregar(self):
@@ -219,28 +205,22 @@ class Tarjetas(db.Model):
         db.session.commit()
 
     def consultaIndividuall(self,id):
-        return Tarjetas.query.get(id)
-
-    def eliminacionLogica(self,id):
-        tar = self.consultaIndividual(id)
-        tar.estatus='Inactiva'
-        tar.editar()
+        return tipoPago.query.get(id)
 
     def eliminar(self,id):
         cat=self.consultaIndividuall(id)
         db.session.delete(cat)
         db.session.commit()
 
-class Paqueterias(db.Model):
-    __tablename__='paqueterias'
-    idPaqueteria=Column(Integer,primary_key=True)
-    nombre=Column(String, nullable=False)
-    paginaWeb=Column(String, nullable=False)
-    precioGr=Column(Float, nullable=False)
-    Telefono=Column(String, nullable=False)
-    estatus=Column(String, nullable=False)
 
-    def consultaPaqueterias(self):
+class Transportes(db.Model):
+    __tablename__ = 'Transportes'
+    idTransportes = Column(Integer, primary_key=True)
+    nombre = Column(String(20))
+    telefono=Column(String(10))
+    estatus=Column(String(1))
+
+    def consultaGeneral(self):
         return self.query.all()
 
     def agregar(self):
@@ -251,42 +231,42 @@ class Paqueterias(db.Model):
         db.session.merge(self)
         db.session.commit()
 
-    def consultaIndividuall(self,id):
-        return Paqueterias.query.get(id)
+    def consultaIndividual(self,id):
+        return Transportes.query.get(id)
 
     def eliminar(self,id):
-        paq=self.consultaIndividuall(id)
+        paq=self.consultaIndividual(id)
         db.session.delete(paq)
         db.session.commit()
 
     def eliminacionLogica(self,id):
-        paq = self.consultaIndividuall(id)
+        paq = self.consultaIndividual(id)
         paq.estatus='Inactiva'
         paq.editar()
 
-class Carrito(db.Model):
-    __tablename__='Carrito'
-    idCarrito=Column(Integer,primary_key=True)
-    idUsuario=Column(Integer,ForeignKey('Usuarios.idUsuario'))
+class Ventas(db.Model):
+    __tablename__='ventas'
+    idVentas=Column(Integer,primary_key=True)
+    idUsuario=Column(Integer,ForeignKey('usuario.idUsuario'))
     idProducto=Column(Integer,ForeignKey('Productos.idProducto'))
     fecha=Column(Date,default=datetime.date.today())
     cantidad=Column(Integer,nullable=False,default=1)
     estatus=Column(String,nullable=False,default='Pendiente')
-    producto=relationship('Producto',backref='carrito',lazy='select')
-    usuario=relationship('Usuario',backref='carrito',lazy='select')
+    producto=relationship('Producto',backref='ventas',lazy='select')
+    usuario=relationship('Usuario',backref='ventas',lazy='select')
 
-    def agregarCarrito(self):
+    def agregarVenta(self):
         db.session.add(self)
         db.session.commit()
     def consultaGeneralCar(self,idUsuario):
-        return self.query.filter(Carrito.idUsuario==idUsuario).all()
+        return self.query.filter(Ventas.idUsuario==idUsuario).all()
 
     def consultaIndividuall(self,id):
-        return Carrito.query.get(id)
+        return Ventas.query.get(id)
 
-    def eliminarProductoDeCarrito(self,id):
-        carrito=self.consultaIndividuall(id)
-        db.session.delete(carrito)
+    def eliminarProductoDeVenta(self,id):
+        venta=self.consultaIndividuall(id)
+        db.session.delete(venta)
         db.session.commit()
 
     def editar(self):

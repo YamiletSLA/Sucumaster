@@ -6,36 +6,23 @@
 {% block contenido %}
 {{super()}}
 <div>
-    <h1 class="caja text-center">Listado de Tarjetas del usuario: {{current_user.nombreCompleto}}</h1>
-    {% if current_user.is_authenticated and current_user.is_admin() %}
-    <a href="/Categorias/nueva" class="btn btn-success">
-         <span class="glyphicon glyphicon-plus-sign"></span>
-        Agregar Categoria
-    </a>
-    {% endif %}
+    <h1 class="caja text-center">Tipo de Pagos</h1>
     <table class="table table-condensed">
-        <th>NUMERO DE TARJETA</th>
-        <th>BANCO</th>
-        <th>ESTATUS</th>
-        <th>SALDO</th>
+        <th>TIPO DE PAGO</th>
         <th>EDITAR</th>
-        {% for tar in tarjetas %}
-        {% if tar.idUsuario == current_user.idUsuario %}
-            <tr>
-                <td>{{tar.noTarjeta}}</td>
-                <td>{{tar.Banco}}</td>
-                <td>{{tar.estatus}}</td>
-                <td>{{tar.saldo}}</td>
+
+        {% for tipopa in tipopago %}
+            <tr class="active">
+                <td>{{tipopa.tipo}}</td>
                 <td>
-                    <a href="/Tarjetas/{{tar.idTarjeta}}">
+                    <a href="/Tarjetas/{{tipopa.idTipoPago}}">
                         <span class="glyphicon glyphicon-edit"></span>
                     </a>
                 </td>
             </tr>
-        {% endif %}
         {% endfor %}
     </table>
-    {% if current_user.is_authenticated and current_user.is_comprador() %}
+    {% if current_user.is_authenticated and current_user.is_admin() %}
     <a href="/Tarjetas/nueva" class="btn btn-success">
          <span class="glyphicon glyphicon-plus-sign"></span>
         Agregar Tarjeta

@@ -10,7 +10,7 @@
           <li><a href="/productos">PRODUCTOS</a></li>
           <li><a href="/productos/categorias">PRODUCTOS POR CATEGORIA</a></li>
           {% if current_user.is_authenticated and current_user.is_admin() %}
-          <li><a href="/Paqueterias">PAQUETERIAS</a></li>
+          <li><a href="/Transportes">TRANSPORTES</a></li>
           {% endif %}
         </ul>
       </li>
@@ -35,6 +35,7 @@
           <li><a href="/Usuarios/nuevo">Registro de Usuarios</a></li>
         </ul>
       </li>
+      <li><a href="/Tarjetas"><span class="glyphicon glyphicon-credit-card"></span> TARJETAS</a></li>
       {% endif %}
     </ul>
     <ul class="nav navbar-nav navbar-right">
@@ -49,9 +50,6 @@
               <ul class="dropdown-menu">
                 <li><a href="/Usuarios/verPerfil"><span class="glyphicon glyphicon-edit"></span>  Editar mi perfil</a></li>
                 <li><a href="/Usuarios/cerrarSesion"><span class="glyphicon glyphicon-log-out"></span> Cerrar Sesion</a></li>
-                {% if current_user.is_comprador() %}
-                <li><a href="/Tarjetas"><span class="glyphicon glyphicon-credit-card"> Tarjetas</span></a></li>
-                {% endif %}
               </ul>
             </li>
             {% endif %}
