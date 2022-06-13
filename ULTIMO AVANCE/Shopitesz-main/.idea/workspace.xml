@@ -13,23 +13,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/principal.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="206">
-              <caret line="440" column="85" selection-start-line="440" selection-start-column="85" selection-end-line="440" selection-end-column="85" />
+            <state relative-caret-position="-15">
+              <caret line="9" column="21" lean-forward="true" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
               <folding>
-                <element signature="e#0#30#0" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#a#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#a#0;n#div#1;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/tarjetas/editarT.html">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/comunes/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="50" column="6" lean-forward="true" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
+            <state relative-caret-position="138">
+              <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
+              <folding>
+                <element signature="e#325#365#0" expanded="true" />
+                <element signature="e#421#455#0" expanded="true" />
+                <element signature="e#549#585#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -136,7 +146,6 @@
         <option value="$PROJECT_DIR$/templates/comunes/error_404.html" />
         <option value="$PROJECT_DIR$/templates/Envios/registrarEnvio.html" />
         <option value="$PROJECT_DIR$/templates/envios/envio.html" />
-        <option value="$PROJECT_DIR$/templates/comunes/base.html" />
         <option value="$PROJECT_DIR$/static/css/estilo.css" />
         <option value="$PROJECT_DIR$/templates/principal.html" />
         <option value="$PROJECT_DIR$/templates/usuarios/editar.html" />
@@ -179,10 +188,11 @@
         <option value="$PROJECT_DIR$/modelo/Dao.py" />
         <option value="$PROJECT_DIR$/templates/tarjetas/editarT.html" />
         <option value="$PROJECT_DIR$/app.py" />
+        <option value="$PROJECT_DIR$/templates/comunes/base.html" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="266" />
     <option name="y" value="6" />
     <option name="width" value="723" />
@@ -211,6 +221,12 @@
               <item name="Shopitesz-main" type="b2602c69:ProjectViewProjectNode" />
               <item name="Shopitesz-main" type="462c0819:PsiDirectoryNode" />
               <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Shopitesz-main" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Shopitesz-main" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="img" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Shopitesz-main" type="b2602c69:ProjectViewProjectNode" />
@@ -295,17 +311,17 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\marti\Documents\GitHub\Sucumaster\ULTIMO AVANCE\Shopitesz-main\static\img" />
+      <recent name="C:\Users\marti\Documents\GitHub\Sucumaster\ULTIMO AVANCE\Shopitesz-main\templates" />
+      <recent name="C:\Users\marti\Desktop\Clases\8o\ERP\Verano_Shopitesz_Eq5\ULTIMO AVANCE\Shopitesz-main\templates\comunes" />
+      <recent name="C:\Users\Jorge Ortega\Documents\GitHub\Verano_Shopitesz_Eq5\ULTIMO AVANCE\Shopitesz-main\static\js" />
+      <recent name="C:\Users\Jorge Ortega\Documents\GitHub\Verano_Shopitesz_Eq5\ULTIMO AVANCE\Shopitesz-main\templates\carrito" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/templates/usuarios" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/controlador" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\marti\Documents\GitHub\Sucumaster\ULTIMO AVANCE\Shopitesz-main\templates" />
-      <recent name="C:\Users\marti\Documents\GitHub\Sucumaster\ULTIMO AVANCE\Shopitesz-main\static\img" />
-      <recent name="C:\Users\marti\Desktop\Clases\8o\ERP\Verano_Shopitesz_Eq5\ULTIMO AVANCE\Shopitesz-main\templates\comunes" />
-      <recent name="C:\Users\Jorge Ortega\Documents\GitHub\Verano_Shopitesz_Eq5\ULTIMO AVANCE\Shopitesz-main\static\js" />
-      <recent name="C:\Users\Jorge Ortega\Documents\GitHub\Verano_Shopitesz_Eq5\ULTIMO AVANCE\Shopitesz-main\templates\carrito" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -397,12 +413,12 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="1" sideWeight="0.5006196" side_tool="true" weight="0.24947146" />
-      <window_info active="true" content_ui="combo" id="Project" order="2" sideWeight="0.4993804" visible="true" weight="0.14860907" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" sideWeight="0.4993804" visible="true" weight="0.12225476" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.328594" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4969743" visible="true" weight="0.24960506" />
@@ -472,21 +488,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/principal.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#p#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#a#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#a#0;n#div#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/flask/app.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
@@ -514,13 +515,6 @@
     <entry file="file://$PROJECT_DIR$/templates/usuarios/vendedores.html" />
     <entry file="file://$PROJECT_DIR$/templates/carrito/eliminar.html" />
     <entry file="file://$PROJECT_DIR$/templates/carrito/ver.html" />
-    <entry file="file://$PROJECT_DIR$/templates/comunes/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/usuarios/registrarCuenta.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -704,7 +698,7 @@
     <entry file="file://$PROJECT_DIR$/templates/tarjetas/editarT.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
-          <caret line="50" column="6" lean-forward="true" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
+          <caret line="50" column="6" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -760,9 +754,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
-          <folding>
-            <element signature="e#2336#2343#1" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -770,6 +761,33 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="19" column="9" selection-start-line="19" selection-start-column="9" selection-end-line="19" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/principal.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-15">
+          <caret line="9" column="21" lean-forward="true" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#a#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#a#0;n#div#1;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/comunes/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
+          <folding>
+            <element signature="e#325#365#0" expanded="true" />
+            <element signature="e#421#455#0" expanded="true" />
+            <element signature="e#549#585#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
