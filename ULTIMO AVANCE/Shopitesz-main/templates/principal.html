@@ -8,9 +8,9 @@
     {%if current_user.is_authenticated %}
 
         <span style="font-color: #FFFFFF; font-size: 40pt; FONT-FAMILY: Helvetica;"></span>
-        </p>
     {% endif %}
-    <img src="{{url_for('static',filename='img/Zorro.png')}}" alt="Zorro" width="400" height="400" style="float:right">
+<div class="container">
+    <img src="{{url_for('static',filename='img/Suculentas.jpeg')}}" alt="Zorro" width="600" height="400" style="float:right">
     <br>
     <br>
     <br>
@@ -27,4 +27,5 @@
             <span style="font-color: #FFFFFF; font-size: 50pt; FONT-FAMILY: Helvetica;">Iniciar Sesion</span>
         </a>
     </div>
+</div>
 {% endblock %}
