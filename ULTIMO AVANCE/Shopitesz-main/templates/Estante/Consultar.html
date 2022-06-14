@@ -11,14 +11,17 @@
         <th>NOMBRE</th>
         <th>UBICACIÓN</th>
         {% if current_user.is_authenticated and current_user.is_admin() %}
+        <th>EDITAR</th>
         {% endif %}
         {% for est in estante %}
                 <tr class="active">
                     <td>{{est.nombre}}</td>
                     <td>{{est.ubicacion}}</td>
                 {% if current_user.is_authenticated and current_user.is_admin() %}
+                    <td>
                         <a href="/Estante/{{est.idEstante}}">
                             <span class="glyphicon glyphicon-edit"></span>
+                            Detalles
                         </a>
                      </td>
                 {% endif %}
