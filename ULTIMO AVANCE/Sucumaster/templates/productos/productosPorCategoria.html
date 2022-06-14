@@ -12,7 +12,7 @@
     <select id="categoria" onchange="obtenerID()" style="font-size: 15pt">
         <option value="0">Todas las categorias</option>
         {% for cat in categorias %}
-            <option value="{{cat.idCategoria}}">{{cat.nombre}}</option>
+            <option value="{{cat.idCategorias}}">{{cat.nombre}}</option>
         {% endfor %}
     </select>
     <div class="table-responsive">
