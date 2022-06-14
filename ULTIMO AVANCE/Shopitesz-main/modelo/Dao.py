@@ -75,9 +75,9 @@ class Usuario(UserMixin,db.Model):
     tipoUsuario=Column(String,nullable=False)
 
 
-    # @property #Implementa el metodo Get (para acceder a un valor)
-    # def password(self):
-    #     raise AttributeError('El password no tiene acceso de lectura')
+    @property #Implementa el metodo Get (para acceder a un valor)
+    def password(self):
+        raise AttributeError('El password no tiene acceso de lectura')
     #
     # @password.setter #Definir el metodo set para el atributo password_hash
     # def password(self,password):#Se informa el password en formato plano para hacer el cifrado
