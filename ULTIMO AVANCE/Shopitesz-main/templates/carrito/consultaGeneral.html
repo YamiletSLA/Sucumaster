@@ -4,7 +4,7 @@
     {% include 'comunes/menu.html' %}
 {% endblock %}
 {% block contenido %}
-    <h1>LISTADO DE LA CESTA</h1>
+    <h1>LISTADO DE LA VENTA</h1>
     <div class="table-responsive">
     <table class="table">
         <thead>
@@ -16,7 +16,7 @@
             <th>FECHA DE REGISTRO</th>
             <th>EDITAR</th>
         </thead>
-        {% for prod in cesta %}
+        {% for prod in venta %}
             <tr>
 
                 <td>{{prod.producto.nombre}}</td>
@@ -24,9 +24,9 @@
                 <td>{{prod.producto.precioVenta}}</td>
                 <td>{{prod.producto.precioVenta * prod.cantidad}}</td>
                 <td>{{prod.fecha}}</td>
-                {% if current_user.is_authenticated and current_user.is_comprador() %}
+                {% if current_user.is_authenticated and current_user.is_admin() %}
                 <td>
-                  <a href="/carrito/consultacarrito/{{prod.idCarrito}}">
+                  <a href="/Venta/consultacarrito/{{prod.idVentas}}">
                       <span class="glyphicon glyphicon-edit"></span>
                     </a>
                 </td>
@@ -35,7 +35,4 @@
         {% endfor %}
     </table>
     </div>
-{% if current_user.is_authenticated and current_user.is_admin() %}
-<label>Debes iniciar sesión con otra cuenta</label>
-{% endif %}
 {% endblock %}

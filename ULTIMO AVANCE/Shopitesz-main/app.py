@@ -177,7 +177,7 @@ def consultarProductosPorCategoria(id):
     listaProductos=[]
     #Generacion de un diccionario para convertir los datos a JSON
     for prod in lista:
-        prod_dic={'idProducto':prod.idProducto,'nombre':prod.nombre,'descripcion':prod.descripcion,'precio':prod.precio}
+        prod_dic={'idProducto':prod.idProducto,'nombre':prod.nombre,'descripcion':prod.descripcion,'precio':prod.precio,'existencia':prod.existencia}
         listaProductos.append(prod_dic)
     #print(listaProductos)
     var_json=json.dumps(listaProductos)
@@ -188,7 +188,7 @@ def consultarProducto(id):
     if current_user.is_authenticated and  current_user.is_admin():
         prod=Producto()
         prod.consultaIndividual(id)
-        return render_template('productos/Modificar.html',prod=prod.consultaIndividual(id))
+        return render_template('productos/editarP.html',prod=prod.consultaIndividual(id))
     else:
         msg={"estatus":"error","mensaje":"Debes iniciar sesion"}
         return json.dumps(msg)
@@ -212,6 +212,7 @@ def agregarProducto():
                     prod.idCategorias=request.form['categoria']
                     prod.nombre=request.form['nombre']
                     prod.descripcion=request.form['desc']
+                    prod.existencia = request.form['exist']
                     prod.precio=request.form['precio']
                     prod.agregar()
                     flash('¡ Producto agregada con exito !')
@@ -235,6 +236,7 @@ def editarProducto():
             prod.idCategorias=request.form['idCategorias']
             prod.nombre=request.form['nombre']
             prod.descripcion = request.form['desc']
+            prod.existencia = request.form['exist']
             prod.precio = request.form['precio']
             prod.editar()
             flash('¡ Producto editado con exito !')
@@ -561,45 +563,45 @@ def eliminarTransporte(id):
     return render_template('Transportes/Consultar.html', transportes=t.consultaGeneral())
 
 ##############################
-@app.route('/carrito/agregar/<data>',methods=['get'])
-def agregarProductoCarrito(data):
+@app.route('/Venta/agregar/<data>',methods=['get'])
+def agregarProductoVenta(data):
     msg=''
-    if current_user.is_authenticated and current_user.is_comprador():
+    if current_user.is_authenticated and current_user.is_admin():
         datos=json.loads(data)
-        carrito=Carrito()
+        carrito=Ventas
         carrito.idProducto=datos['idProducto']
         carrito.idUsuario=current_user.idUsuario
         carrito.cantidad=datos['cantidad']
-        carrito.agregarCarrito()
-        msg={'estatus':'ok','mensaje':'Producto agregado a la cesta.'}
+        carrito.agregarVenta()
+        msg={'estatus':'ok','mensaje':'Producto agregado a la venta.'}
     else:
         msg = {"estatus": "error", "mensaje": "Debes iniciar sesion"}
     return json.dumps(msg)
 
-@app.route("/carrito")
+@app.route("/Venta")
 @login_required
-def consultarCesta():
+def consultarVenta():
     if current_user.is_authenticated:
-        carrito = Carrito()
-        return render_template('carrito/consultaGeneral.html',cesta=carrito.consultaGeneralCar(current_user.idUsuario))
+        carrito = Ventas()
+        return render_template('carrito/consultaGeneral.html',venta=carrito.consultaGeneralCar(current_user.idUsuario))
     else:
         return redirect(url_for('mostrar_login'))
 
-@app.route('/carrito/consultacarrito/<int:id>')
+@app.route('/Venta/consultacarrito/<int:id>')
 @login_required
-def consultarDeCarrito(id):
-    carrito = Carrito()
-    if current_user.is_authenticated and current_user.is_comprador():
-        return render_template('carrito/editarCarrito.html', carrito=carrito.consultaIndividuall(id))
+def consultaVenta(id):
+    carrito = Ventas()
+    if current_user.is_authenticated and current_user.is_admin():
+        return render_template('carrito/editarCarrito.html', ventas=carrito.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
 
-@app.route('/carrito/editar', methods=['POST'])
+@app.route('/Venta/editar', methods=['POST'])
 @login_required
-def editarCarrito():
-    if current_user.is_authenticated and current_user.is_comprador():
+def editarVenta():
+    if current_user.is_authenticated and current_user.is_admin():
         try:
-            car = Carrito()
+            car = Ventas()
             car.idCarrito = request.form['idCarrito']
             car.idUsuario = request.form['idUser']
             car.idProducto = request.form['idProd']
@@ -614,13 +616,13 @@ def editarCarrito():
     else:
         return redirect(url_for('mostrar_login'))
 
-@app.route('/Carrito/eliminar/<int:id>')
+@app.route('/Venta/eliminar/<int:id>')
 @login_required
 def eliminarCarrito(id):
     if current_user.is_authenticated and current_user.is_comprador():
         try:
-            carrito=Carrito()
-            carrito.eliminarProductoDeCarrito(id)
+            carrito=Ventas()
+            carrito.eliminarProductoDeVenta(id)
             flash('Elemento del carrito eliminada con exito')
         except:
             flash('Error al eliminar el elemento del carrito')
