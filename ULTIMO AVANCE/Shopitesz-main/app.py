@@ -433,24 +433,24 @@ def error_500(e):
     return render_template('comunes/error_500.html'),500
 
 #TARJETAS
-@app.route('/Tarjetas')
+@app.route('/TipoPago')
 @login_required
 def consultarTP():
     if current_user.is_authenticated and current_user.is_admin():
         ti = tipoPago()
-        return render_template('/tarjetas/consultaT.html',tipopago = ti.consultarTP())
+        return render_template('/TipoPago/consultaTP.html',tipopago = ti.consultarTP())
     else:
         abort(404)
 
-@app.route('/Tarjetas/nueva')
+@app.route('/TipoPago/nueva')
 @login_required
 def nuevoTP():
     if current_user.is_authenticated and current_user.is_admin():
-            return render_template('tarjetas/agregarT.html')
+            return render_template('TipoPago/agregarTP.html')
     else:
         abort(404)
 
-@app.route('/Tarjetas/agregar',methods=['post'])
+@app.route('/TipoPago/agregar',methods=['post'])
 @login_required
 def agregarTP():
     try:
@@ -472,13 +472,13 @@ def agregarTP():
     except:
         abort(500)
 
-@app.route('/Tarjetas/editar',methods=['post'])
+@app.route('/TipoPago/editar',methods=['post'])
 @login_required
-def editarTarjeta():
+def editarTP():
     if current_user.is_authenticated and current_user.is_admin():
         try:
             ti=tipoPago()
-            ti.idTarjeta=request.form['id']
+            ti.idTipoPago=request.form['id']
             ti.tipo=request.form['tipo']
             ti.editar()
             flash('¡ Tipo de Pago editado con exito !')
@@ -489,18 +489,18 @@ def editarTarjeta():
     else:
         return redirect(url_for('mostrar_login'))
 
-@app.route('/Tarjetas/<int:id>')
+@app.route('/TipoPago/<int:id>')
 @login_required
-def consultarTarjeta(id):
+def consultaTP(id):
     if current_user.is_authenticated and current_user.is_admin():
         ti=tipoPago()
-        return render_template('tarjetas/editarT.html',tp=ti.consultaIndividuall(id))
+        return render_template('TipoPago/editarTP.html',tipopa=ti.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
 
-@app.route('/Tarjetas/eliminar/<int:id>')
+@app.route('/TipoPago/eliminar/<int:id>')
 @login_required
-def eliminarTarjeta(id):
+def eliminarTP(id):
     if current_user.is_authenticated and current_user.is_admin():
         try:
             ti=tipoPago()
@@ -508,7 +508,7 @@ def eliminarTarjeta(id):
             flash('Tipo de Pago eliminado con exito')
         except:
             flash('Error al eliminar el Tipo de Pago')
-        return redirect(url_for('consultaGeneral'))
+        return redirect(url_for('consultarTP'))
     else:
         return redirect(url_for('mostrar_login'))
 

@@ -5,14 +5,14 @@
 {% endblock %}
 {% block contenido %}
 <div>
-    <h1 class="caja bg-lg text-center">Editar tarjeta</h1>
-    <form action="/Tarjetas/editar" method="post" enctype="multipart/form-data">
+    <h1 class="caja bg-lg text-center">Editar Tipo de Pago</h1>
+    <form action="/TipoPago/editar" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="id">ID:</label>
-            <input type="number" name="id" value="{{tipopa.idTipoPaggo}}" readonly class="form-control">
+            <input type="number" name="id" value="{{tipopa.idTipoPago}}" readonly class="form-control">
         </div>
         <div class="form-group">
-            <label for="tipo">Número de tarjeta:</label>
+            <label for="tipo">Tipo:</label>
             <input type="text" name="tipo" required maxlength="60" placeholder="Tipo de Pago" class="form-control" value="{{tipopa.tipo}}">
         </div>
             <button type="submit" class="btn btn-default2">
@@ -41,7 +41,7 @@
         <p>¿ Estas seguro de eliminar el Tipo de Pago:<b>{{tipopa.tipo}} ?</b> </p>
       </div>
       <div class="modal-footer">
-          <a class="btn btn-primary" href="/Tarjetas/eliminar/{{tipopa.idTipoPago}}">Aceptar</a>
+          <a class="btn btn-primary" href="/TipoPago/eliminar/{{tipopa.idTipoPago}}">Aceptar</a>
           <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
