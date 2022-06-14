@@ -1,0 +1,37 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+<div>
+    <h1 class="caja text-center">Registro de estantes</h1>
+    <form action="/Estante/nuevo" method="post" enctype="multipart/form-data" onsubmit="return validar(this)">
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" required maxlength="3" placeholder="Nombre del estante" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="ubicacion">Ubicacion:</label>
+            <input type="text" name="ubicacion"   required maxlength="30"  placeholder="Ubicacion" class="form-control">
+        </div>
+            <button type="submit" class="btn btn-default2">
+                <span class="glyphicon glyphicon-floppy-disk"></span>
+                Agregar
+            </button>
+            <a href="/Estante" class="btn btn-default">
+                <span class="glyphicon glyphicon-circle-arrow-left"></span>
+                Cancelar
+            </a>
+    </form>
+/*DUDA AQUI ABAJO*/
+    {% if get_flashed_messages() %}
+        <div class="alert alert-success alert-dismissible">
+            {% for message in get_flashed_messages() %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{message}}</strong>
+            {% endfor %}
+       </div>
+
+    {% endif %}
+{% endblock %}
