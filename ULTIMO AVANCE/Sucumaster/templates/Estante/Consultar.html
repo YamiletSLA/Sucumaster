@@ -1,0 +1,35 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+<div>
+    <h1 class="caja text-center">Estantes</h1>
+    <table class="table table-condensed">
+        <th>NOMBRE</th>
+        <th>UBICACIÓN</th>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
+        {% endif %}
+        {% for est in estante %}
+                <tr class="active">
+                    <td>{{est.nombre}}</td>
+                    <td>{{est.ubicacion}}</td>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                        <a href="/Estante/{{est.idEstante}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                     </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    {% if current_user.is_authenticated and current_user.is_admin() %}
+    <a href="/Estante/Registrar" class="btn btn-success">
+         <span class="glyphicon glyphicon-plus-sign"></span>
+        Agregar Estante
+    </a>
+    {% endif %}
+</div>
+{% endblock %}

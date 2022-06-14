@@ -3,7 +3,7 @@ from urllib import request
 
 from flask import Flask,render_template,request,redirect,url_for,flash,session,abort
 from flask_bootstrap import Bootstrap
-from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante
 from flask_login import login_required,login_user,logout_user,current_user,LoginManager
 import json
 
@@ -823,6 +823,47 @@ def eliminarEspeciales(id):
     esp=Especiales()
     esp.eliminar(id)
     return render_template('Especiales/Consultar.html',especiales=esp.consultaGeneral())
+
+##Estante
+@app.route('/Estante')
+def consultaGeneralEstante():
+    e=Estante()
+    return render_template('Estante/Consultar.html',estante=e.consultaGeneral())
+
+@app.route('/Estante/Registrar')
+def RegistrarEstante():
+    return render_template('Estante/Registrar.html')
+
+@app.route('/Estante/nuevo',methods=['post'])
+def nuevoEstante():
+    e = Estante()
+    e.nombre = request.form['nombre']
+    e.ubicacion=request.form['ubicacion']
+    e.agregar()
+    flash('Estante registrado con exito')
+    return render_template('Estante/Registrar.html')
+
+@app.route('/Estante/<int:id>')
+def ConsultaIndEstante(id):
+    e = Estante()
+    return render_template('Estante/Modificar.html',est=e.consultaIndividual(id))
+
+@app.route('/Estante/Modificar',methods=['post'])
+def ModificarEstante():
+    e= Estante()
+    e.idEstante = request.form['Id']
+    e.nombre = request.form['nombre']
+    e.ubicacion=request.form['ubicacion']
+    e.editar()
+    flash('La modificación del estante se realizó con exito')
+    return render_template('Estante/Modificar.html',est=e)
+
+@app.route('/Estante/eliminar/<int:id>')
+def eliminarEstante(id):
+    e=Estante()
+    e.eliminar(id)
+    return render_template('Estante/Consultar.html', estantes=e.consultaGeneral())
+
 
 
 if __name__=='__main__':
