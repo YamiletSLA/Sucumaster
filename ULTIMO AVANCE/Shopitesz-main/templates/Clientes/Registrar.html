@@ -1,0 +1,48 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+
+        <h1 class="caja text-center"><span style="font-size: 30pt;"> Registrar Cliente</span></h1>
+    <form action="/Clientes/nuevo" method="post" enctype="multipart/form-data">
+        <div class="imput-group " style="padding-left: 320pt;">
+              <h3>
+                  <label class="col-sm-2">Nombre:</label>
+                  <input type="text" required  name="nombre" placeholder="Ingrese Nombre" maxlength="20">
+                <br>
+                  <br>
+                  <label class="col-sm-2">Dirección: </label>
+                  <input type="text" required  name="direccion" placeholder="Ingrese la dirección" maxlength="45">
+                <br>
+                <br>
+                  <label class="col-sm-2">Telefono:</label>
+                  <input type="text" required  name="telefono" placeholder="Ingrese teléfono" maxlength="10">
+                <br>
+                <br>
+                  <label class="col-sm-2">RFC:</label>
+                  <input type="text" required  name="RFC" placeholder="Ingrese RFC" maxlength="13">
+                <br>
+              </h3>
+             <br>
+         </div>
+        <div class="text text-center">
+              <button type="submit" class="btn btn-primary btn-lg" role="button" ><img src="{{url_for('static',filename='imagenes/save.png')}}"> Guardar</button>
+            <a class="btn btn-primary btn-lg" href="/Clientes" role="button"><span class="glyphicon glyphicon-chevron-left"></span> Regresar</a>
+        </div>
+
+
+
+    </form>
+    {% if get_flashed_messages() %}
+        <div class="alert alert-success alert-dismissible">
+            {% for message in get_flashed_messages() %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{message}}</strong>
+            {% endfor %}
+       </div>
+
+    {% endif %}
+{% endblock %}

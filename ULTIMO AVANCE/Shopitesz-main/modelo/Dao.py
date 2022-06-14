@@ -311,3 +311,40 @@ class DetallePedidos(db.Model):
         paq = self.consultaIndividuall(id)
         paq.estatus='Cancelado'
         paq.editar()
+
+######CLIENTES
+##################Clientes
+class Clientes(db.Model):
+    __tablename__ = 'cliente'
+    idCliente = Column(Integer, primary_key=True)
+    nombre = Column(String(30))
+    direccion = Column(String(45))
+    telefono = Column(String(10))
+    RFC = Column(String(13))
+
+    def insertar(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def consultaIndividual(self, id):
+        return self.query.get(id)
+
+    def eliminar(self, id):
+        obj = self.consultaIndividual(id)
+        db.session.delete(obj)
+        db.session.commit()
+
+    def actualizar(self):
+        db.session.merge(self)
+        db.session.commit()
+
+    def consultaGeneral(self):
+        return self.query.all()
+    # def consultaGeneral(self, pagina):
+    #     return self.query.order_by(Transportes.idTransportes.asc()).paginate(pagina, per_page=5, error_out=False).items
+    #     # return self.query.all()
+
+    def eliminacionLogica(self,id):
+        usuario = self.consultaIndividual(id)
+        usuario.estatus = 'I'
+        usuario.editar()
