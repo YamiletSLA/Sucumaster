@@ -4,43 +4,36 @@
     <h1 class="bg-primary text-center" onclick="alert('Se hizo click')" onclick="imprimirMsg()">Registro de Usuarios</h1>
     <form action="/Usuarios/agregar" method="post" onsubmit="return validar(this)">
         <div class="form-group">
-            <label for="nombre">Nombre completo:</label>
-            <input class="form-control form-control-lg" type="text" name="nombre" maxlength="50"  placeholder="Nombre Completo" required>
+            <label for="nombreCompleto">Nombre completo:</label>
+            <input class="form-control form-control-lg" type="text" name="nombreCompleto" maxlength="50"  placeholder="Nombre Completo" required>
         </div>
         <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" name="email" maxlength="50" class="form-control form-control-lg" required>
+            <label for="nombreUsuario">Nombre de Usuario:</label>
+            <input class="form-control form-control-lg" type="text" name="nombreUsuario" maxlength="50"  placeholder="Nombre de Usuario" required>
         </div>
         <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <input type="text" name="direccion" maxlength="60" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="clave">Password:</label>
+            <label for="password">Contraseña:</label>
             <input type="password" name="password" id="password" maxlength="20" class="form-control" required>
         </div>
-        <input type="checkbox" id="verPassword" onchange="verPasswords()">Ver password
+        <input type="checkbox" id="verPassword" onchange="verPasswords()">Ver Contraseña
         <div class="form-group">
-            <label for="clave">Confirmar Password:</label>
+            <label for="password">Confirmar Contraseña:</label>
             <input type="password" name="passwordConfirmacion" id="passwordConfirmacion" maxlength="20" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="telefono">Telefono:</label>
-            <input type="tel" name="telefono" maxlength="12" class="form-control" required>
-        </div>
-        <div class="radio">
-            <label>Genero:</label>
-            <label class="radio-inline"><input type="radio" name="genero" value="F" checked>Femenino</label>
-            <label class="radio-inline"><input type="radio" name="genero" value="M">Masculino</label>
         </div>
         {% if current_user.is_authenticated and current_user.is_admin() %}
         <div class="radio">
-            <label>Tipo:</label>
-            <label class="radio-inline"><input type="radio" name="tipo" value="Comprador" checked>Comprador</label>
-            <label class="radio-inline"><input type="radio" name="tipo" value="Vendedor">Vendedor</label>
-            <label class="radio-inline"><input type="radio" name="tipo" value="Administrador">Administrador</label>
+            <label>Tipo de Usuario:</label>
+            <label class="radio-inline"><input type="radio" name="tipoUsuario" value="Almacenista" checked>Almacenista</label>
+            <label class="radio-inline"><input type="radio" name="tipoUsuario" value="Vendedor">Vendedor</label>
+            <label class="radio-inline"><input type="radio" name="tipoUsuario" value="Administrador">Administrador</label>
         </div>
         {% endif %}
+        <div class="radio">
+            <label>Estatus:</label>
+            <label class="radio-inline"><input type="radio" name="estatus" value="A" checked>Activo</label>
+            <label class="radio-inline"><input type="radio" name="estatus" value="I">Inactivo</label>
+        </div>
+
         <button type="submit" class="btn btn-primary mb-3">
             <span class="glyphicon glyphicon-floppy-disk"></span>
             Registrar
