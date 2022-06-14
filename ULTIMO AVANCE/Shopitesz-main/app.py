@@ -3,7 +3,7 @@ from urllib import request
 
 from flask import Flask,render_template,request,redirect,url_for,flash,session,abort
 from flask_bootstrap import Bootstrap
-from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales
 from flask_login import login_required,login_user,logout_user,current_user,LoginManager
 import json
 
@@ -775,7 +775,55 @@ def eliminarCliente(id):
     cli=Clientes()
     cli.eliminar(id)
     return render_template('Clientes/Consultar.html',clientes=cli.consultaGeneral())
-#################################
+
+##################ESPECIALES
+
+@app.route('/Especiales')
+def ConsultaGeneralEspeciales():
+    esp=Especiales()
+    especiales=esp.consultaGeneral()
+    return render_template('Especiales/Consultar.html',especiales=especiales)
+
+@app.route('/Especiales/Registrar')
+def RegistrarEspeciales():
+    return render_template('Especiales/Registrar.html')
+
+
+@app.route('/Especiales/nuevo',methods=['post'])
+@login_required
+def RegistroEspeciales():
+    esp= Especiales()
+    esp.nombre = request.form['nombre']
+    esp.descripcion = request.form['descripcion']
+    esp.costo = request.form['costo']
+    esp.existencia = request.form['existencia']
+    esp.insertar()
+    flash('Especial registrado con exito')
+    return render_template('Especiales/Registrar.html')
+
+@app.route('/Especiales/Ver/<int:id>')
+def ConsultaIndEspeciales(id):
+    esp = Especiales()
+    return render_template('Especiales/Modificar.html',especial=esp.consultaIndividual(id))
+
+@app.route('/Especiales/Modificar',methods=['post'])
+def ModificacionEspeciales():
+    esp=Especiales()
+    esp.idEspeciales = request.form['idEspeciales']
+    esp.nombre = request.form['nombre']
+    esp.descripcion = request.form['descripcion']
+    esp.costo = request.form['costo']
+    esp.existencia = request.form['existencia']
+    esp.actualizar()
+    flash('La modificación de especiales se realizó con exito')
+    return render_template('Especiales/Modificar.html',especial=esp)
+
+@app.route('/Especiales/eliminar/<int:id>')
+def eliminarEspeciales(id):
+    esp=Especiales()
+    esp.eliminar(id)
+    return render_template('Especiales/Consultar.html',especiales=esp.consultaGeneral())
+
 
 if __name__=='__main__':
     db.init_app(app)#Inicializar la BD - pasar la configuración de la url de la BD
