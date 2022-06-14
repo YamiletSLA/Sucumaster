@@ -66,7 +66,7 @@ def agregarUsuario():
 def eliminarUsuario(id):
     usu=Usuario()
     usu.eliminar(id)
-    return render_template('usuarios/login.html',usuario=usu.consultaUsuarios())
+    return render_template('principal.html',usuario=usu.consultaUsuarios())
 
 
 @app.route("/Usuarios/validarSesion",methods=['POST'])

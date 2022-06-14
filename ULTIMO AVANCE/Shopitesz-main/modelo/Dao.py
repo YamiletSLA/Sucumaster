@@ -75,19 +75,20 @@ class Usuario(UserMixin,db.Model):
     tipoUsuario=Column(String,nullable=False)
 
 
-    @property #Implementa el metodo Get (para acceder a un valor)
-    def password(self):
-        raise AttributeError('El password no tiene acceso de lectura')
+    # @property #Implementa el metodo Get (para acceder a un valor)
+    # def password(self):
+    #     raise AttributeError('El password no tiene acceso de lectura')
     #
     # @password.setter #Definir el metodo set para el atributo password_hash
     # def password(self,password):#Se informa el password en formato plano para hacer el cifrado
-    #     self.password_hash=generate_password_hash(password)
-    #
-    # def validarPassword(self,password):
-    #     return check_password_hash(self.password_hash,password)
+    #     self.contraseña=generate_password_hash(password)
+
+    def validarPassword(self,password):
+        return check_password_hash(self.contraseña,password)
+
     def isValid(self,nomUsu,password):
-        usuario = Usuario.query.filter(Usuario.nombreUsuario == nomUsu,Usuario.contraseña==password).first()
-        if usuario != None and usuario.is_active():
+        usuario = Usuario.query.filter(Usuario.nombreUsuario == nomUsu).first()
+        if usuario != None and usuario.validarPassword(password) and usuario.is_active():
             return usuario
         else:
             return None
