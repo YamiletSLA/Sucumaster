@@ -299,8 +299,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.app" />
       <item itemvalue="Python.Dao" />
+      <item itemvalue="Python.app" />
     </list>
     <recent_temporary>
       <list>
