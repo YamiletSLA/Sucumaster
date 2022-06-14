@@ -145,7 +145,16 @@ class Usuario(UserMixin,db.Model):
     def eliminacionLogica(self,id):
         usuario = self.consultaIndividual(id)
         usuario.estatus = 'I'
-        usuario.editar()
+        usuario.editarUsua()
+
+    def eliminar(self,id):
+        usuario=self.consultaIndividual(id)
+        db.session.delete(usuario)
+        db.session.commit()
+
+
+
+
 
 
 

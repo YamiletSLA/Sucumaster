@@ -14,60 +14,37 @@
             <label for="nombre">Nombre completo:</label>
             <input class="form-control form-control-lg" type="text" name="nombre" maxlength="50"  placeholder="Nombre Completo"  value="{{user.nombreCompleto}}"  required>
         </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" name="email" maxlength="50" class="form-control form-control-lg" required value="{{user.email}}" readonly>
-        </div>
-        <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <input type="text" name="direccion" maxlength="60" class="form-control" required value="{{user.direccion}}">
-        </div>
-        <div class="form-group">
-            <label for="telefono">Telefono:</label>
-            <input type="tel" name="telefono" maxlength="12" class="form-control" required value="{{user.telefono}}">
+         <div class="form-group">
+            <label for="nombreUsuario">Nombre de Usuario:</label>
+            <input class="form-control form-control-lg" type="text" name="nombreUsuario" maxlength="50"  placeholder="Nombre de Usuario"  value="{{user.nombreUsuario}}"  required>
         </div>
         <div class="radio">
-            <label>Genero:</label>
-            {% if user.genero=='F' %}
-            <label class="radio-inline"><input type="radio" name="genero" value="F" checked>Femenino</label>
-            <label class="radio-inline"><input type="radio" name="genero" value="M">Masculino</label>
-            {% else %}
-            <label class="radio-inline"><input type="radio" name="genero" value="F">Femenino</label>
-            <label class="radio-inline"><input type="radio" name="genero" value="M" checked>Masculino</label>
-            {% endif %}
+            <label>Tipo de usuario:</label>
+
+            <label class="radio-inline"><input type="radio" name="tipoUsuario" value="Almacenista">Almacenista</label>
+            <label class="radio-inline"><input type="radio" name="tipoUsuario" value="Vendedor">Vendedor</label>
+            <label class="radio-inline"><input type="radio" name="tipoUsuario" value="Administrador"checked >Administrador</label>
+
+
         </div>
         <div class="radio">
-            <label>Tipo:</label>
-            {% if user.is_authenticated %}
-            {% if user.is_admin() %}
-            <label class="radio-inline"><input type="radio" name="tipo" value="Comprador">Comprador</label>
-            <label class="radio-inline"><input type="radio" name="tipo" value="Vendedor">Vendedor</label>
-            <label class="radio-inline"><input type="radio" name="tipo" value="Administrador"checked >Administrador</label>
-            {% endif %}
-            {% if user.is_comprador() %}
-                <label class="radio-inline"><input type="radio" name="tipo" value="Comprador" checked>Comprador</label>
-            {% endif%}
-            {% if user.is_vendedor() %}
-                <label class="radio-inline"><input type="radio" name="tipo" value="Vendedor" checked>Vendedor</label>
-            {% endif %}
-            {% endif %}
+            <label>Estatus:</label>
+
+            <label class="radio-inline"><input type="radio" name="estatus" value="A" checked>Activo</label>
+            <label class="radio-inline"><input type="radio" name="estatus" value="I">Inactivo</label>
         </div>
         <input type="hidden" name="bandera" value="si">
         <button type="submit" class="btn btn-default2 mb-3">
-            <span class="glyphicon glyphicon-floppy-disk"></span>
+            <span href="/Usuarios/iniciarSesion" class="glyphicon glyphicon-floppy-disk"></span>
             Guardar
         </button>
-        <a href="/Usuarios/eliminar/{{current_user.idUsuario}}" class="btn btn-danger mb-3" style="float:right">
+<a href="/Usuarios/eliminar/{{user.idUsuario}}" class="btn btn-danger mb-3" style="float:right">
             <span class="glyphicon glyphicon-circle-arrow-left"></span>
-            Eliminar Cuenta
+            Eliminar
         </a>
-        <a href="/" class="btn btn-default mb-3">
+        <a href="/Usuarios/iniciarSesion" class="btn btn-default mb-3">
             <span class="glyphicon glyphicon-circle-arrow-left"></span>
             Cancelar
         </a>
     </form>
-
-
-    <br>
-    <br>
 {% endblock %}

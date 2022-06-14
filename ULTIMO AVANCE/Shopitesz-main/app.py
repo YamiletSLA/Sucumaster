@@ -10,6 +10,7 @@ import json
 app = Flask(__name__)
 Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@localhost/sucumaster'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@localhost/sucumaster'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.secret_key='Cl4v3'
 #Implementación de la gestion de usuarios con flask-login
@@ -50,16 +51,22 @@ def agregarUsuario():
         usuario=Usuario()
         usuario.nombreCompleto=request.form['nombreCompleto']
         usuario.nombreUsuario=request.form['nombreUsuario']
-        usuario.direccion=request.form['direccion']
-        usuario.contraseña=request.form['contraseña']
+        usuario.contraseña=request.form['password']
+        usuario.tipoUsuario = request.form['tipoUsuario']
+       ## usuario.tipoUsuario = request.values.get("tipo", "Vendedor")
         usuario.estatus = 'A'
-        usuario.tipoUsuario=request.values.get("tipo","Vendedor")
-
         usuario.agregar()
         flash('¡ Usuario registrado con exito')
     except:
         flash('¡ Error al agregar al usuario !')
     return render_template('usuarios/registrarCuenta.html')
+
+
+@app.route('/Usuarios/eliminar/<int:id>')
+def eliminarUsuario(id):
+    usu=Usuario()
+    usu.eliminar(id)
+    return render_template('usuarios/login.html',usuario=usu.consultaUsuarios())
 
 
 @app.route("/Usuarios/validarSesion",methods=['POST'])
@@ -86,12 +93,12 @@ def cerrarSesion():
 def consultarUsuario():
     return render_template('usuarios/editar.html')
 
-@app.route('/Usuarios/Clientes')
+@app.route('/Usuarios/Almacenista')
 @login_required
-def consultarClientes():
+def consultarAlmacenista():
     if current_user.is_authenticated and current_user.is_admin():
-        user=Usuario()
-        return render_template('usuarios/clientes.html',user=user.consultaUsuarios())
+        us=Usuario()
+        return render_template('usuarios/Almacenista.html',usuario=us.consultaUsuarios())
     else:
         return render_template('usuarios/login.html')
 @app.route('/Usuarios/Vendedores')
@@ -99,7 +106,7 @@ def consultarClientes():
 def consultarVendedores():
     if current_user.is_authenticated and current_user.is_admin():
         user=Usuario()
-        return render_template('usuarios/vendedores.html',user=user.consultaUsuarios())
+        return render_template('usuarios/vendedores.html',usuario=user.consultaUsuarios())
     else:
         return render_template('usuarios/login.html')
 @app.route('/Usuarios/Admin')
@@ -107,7 +114,7 @@ def consultarVendedores():
 def consultarAdmin():
     if current_user.is_authenticated and current_user.is_admin():
         user=Usuario()
-        return render_template('usuarios/admins.html',user=user.consultaUsuarios())
+        return render_template('usuarios/admins.html',usuario=user.consultaUsuarios())
     else:
         return render_template('usuarios/login.html')
 #fin del manejo de usuarios
@@ -129,21 +136,20 @@ def modificarUsuario():
             user=Usuario()
             user.idUsuario=request.form['ID']
             user.nombreCompleto=request.form['nombre']
-            user.email=request.form['email']
-            user.direccion=request.form['direccion']
-            user.genero=request.form['genero']
-            user.tipo=request.form['tipo']
+            user.nombreUsuario=request.form['nombreUsuario']
+            user.tipoUsuario=request.form['tipoUsuario']
+            user.estatus= request.form['estatus']
             user.editarUsua()
             flash('¡ Usuario editado con exito !')
         except:
             flash('¡ Error al editar el usuario !')
 
-        if user.tipo == 'Almacenista':
-            return redirect(url_for('consultarClientes'))
+        if user.tipoUsuario == 'Almacenista':
+            return redirect(url_for('consultarAlmacenista'))
         else:
-            if user.tipo == 'Vendedor':
+            if user.tipoUsuario == 'Vendedor':
                 return redirect(url_for('consultarVendedores'))
-            else :
+            else:
                 return redirect(url_for('consultarAdmin'))
 
     else:
