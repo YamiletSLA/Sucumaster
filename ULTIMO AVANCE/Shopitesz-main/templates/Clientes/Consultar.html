@@ -1,0 +1,50 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+
+
+<div class="text text-center">
+     <h1 class="caja text-center"><span style="font-size: 30pt;"> Clientes</span></h1>
+</div>
+        {%if current_user.is_authenticated and current_user.is_admin()%}
+      <!--  <a class="glyphicon glyphicon-plus-sign" href="/Clientes/Registrar" role="button"><img src="{{url_for('static',filename='imagenes/add.gif')}}">Registrar</a> -->
+
+        <a href="/Clientes/Registrar" class="btn btn-success">
+         <span class="glyphicon glyphicon-plus-sign"></span>
+        Registrar Cliente
+    </a>
+        {% endif %}
+<h4>
+    <table class="table table-dark table-hover table-bordered">
+        <thead>
+            <th>Id Cliente </th>
+            <th>Nombre </th>
+            <th>Direccion </th>
+            <th>Telefono </th>
+            <th>RFC </th>
+            {%if current_user.is_authenticated and current_user.is_admin()%}
+            <th>Modificar</th>
+            {% endif %}
+        </thead>
+        {% for client in clientes %}
+                <tr class="active">
+                    <td>{{client.idCliente}}</td>
+                    <td>{{client.nombre}}</td>
+                    <td>{{client.direccion}}</td>
+                    <td>{{client.telefono}}</td>
+                     <td>{{client.RFC}}</td>
+                    {%if current_user.is_authenticated and current_user.is_admin()%}
+
+                    <td><a href="/Clientes/Ver/{{client.idCliente}}"><span class="glyphicon glyphicon-edit"> </span> Detalles </a></td>
+                    {% endif %}
+                </tr>
+        {% endfor %}
+
+    </table>
+</h4>
+<a class="btn btn-primary btn-lg" href="/Usuarios/iniciarSesion" role="button"><span class="glyphicon glyphicon-chevron-left"></span> Regresar</a>
+{% endblock %}

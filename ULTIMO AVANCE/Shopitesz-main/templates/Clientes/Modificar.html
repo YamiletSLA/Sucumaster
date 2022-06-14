@@ -1,0 +1,65 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+<Script>
+    function eliminar(Id,nombre){
+    resp=confirm("¿Estas seguro de eliminar al Cliente "+  nombre  +" ?");
+        if(resp==true){
+        location.href="/Clientes/eliminar/"+Id
+        }
+        return;
+    }
+</Script>
+<h3 class="text text-center"><p class="text-success">Modificar Información</p></h3>
+    <form action="/Clientes/Modificar" method="post" enctype="multipart/form-data">
+         <div class="imput-group " style="padding-left: 290pt;">
+              <h3>
+                    <label class="col-sm-3">Id Clientes:</label>
+                        <input type="number" name="idCliente" readonly value="{{client.idCliente}}" >
+                   <br>
+                   <br>
+                   <label class="col-sm-3">Nombre: </label>
+                        <input type="text" required  name="nombre"  placeholder="Ingrese nombre" value="{{client.nombre}}" maxlength="20">
+                   <br>
+                   <br>
+                   <label class="col-sm-3">Dirección: </label>
+                        <input type="text" required  name="direccion"  placeholder="Ingrese la Dirección" value="{{client.direccion}}" maxlength="45">
+                   <br>
+                   <br>
+                   <label class="col-sm-3">Telefono:</label>
+                        <input type="text" required  name="telefono"  placeholder="Ingrese el Telefono" value="{{client.telefono}}" maxlength="10">
+                   <br>
+                   <br>
+                  <label class="col-sm-3">RFC:</label>
+                        <input type="text" required  name="RFC"  placeholder="Ingrese el RFC" value="{{client.RFC}}" maxlength="13">
+                   <br>
+                   <br>
+              </h3>
+             <br>
+         </div>
+        <div class="text text-center">
+
+                {%if current_user.is_authenticated and current_user.is_admin()%}
+                <button type="submit" class="btn btn-primary btn-lg" role="button"><img src="{{url_for('static',filename='imagenes/save.png')}}"> Modificar</button>
+                {% endif %}
+
+                {%if current_user.is_authenticated and current_user.is_admin()%}
+                <button type="button" class="btn btn-danger btn-lg" onclick="eliminar({{client.idCliente}},'{{client.nombre}}')" role="button"><img src="{{url_for('static',filename='imagenes/eliminar.png')}}"> Eliminar</button>
+                {% endif %}
+
+             <a class="btn btn-primary btn-lg" href="/Clientes" role="button"><img src="{{url_for('static',filename='imagenes/prev.gif')}}"> Regresar</a>
+         </div>
+    </form>
+     {% if get_flashed_messages() %}
+         <div class="alert alert-success alert-dismissible">
+             {% for message in get_flashed_messages() %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{message}}</strong>
+            {% endfor %}
+         </div>
+     {% endif %}
+{% endblock %}
