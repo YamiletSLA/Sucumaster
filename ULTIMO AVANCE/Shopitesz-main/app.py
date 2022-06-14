@@ -171,7 +171,7 @@ def consultarProductosPorCategoria(id):
     listaProductos=[]
     #Generacion de un diccionario para convertir los datos a JSON
     for prod in lista:
-        prod_dic={'idProducto':prod.idProducto,'nombre':prod.nombre,'descripcion':prod.descripcion,'precio':prod.precio}
+        prod_dic={'idProducto':prod.idProducto,'nombre':prod.nombre,'descripcion':prod.descripcion,'precio':prod.precio,'existencia':prod.existencia}
         listaProductos.append(prod_dic)
     #print(listaProductos)
     var_json=json.dumps(listaProductos)
@@ -182,7 +182,7 @@ def consultarProducto(id):
     if current_user.is_authenticated and  current_user.is_admin():
         prod=Producto()
         prod.consultaIndividual(id)
-        return render_template('productos/Modificar.html',prod=prod.consultaIndividual(id))
+        return render_template('productos/editarP.html',prod=prod.consultaIndividual(id))
     else:
         msg={"estatus":"error","mensaje":"Debes iniciar sesion"}
         return json.dumps(msg)
@@ -206,6 +206,7 @@ def agregarProducto():
                     prod.idCategorias=request.form['categoria']
                     prod.nombre=request.form['nombre']
                     prod.descripcion=request.form['desc']
+                    prod.existencia = request.form['exist']
                     prod.precio=request.form['precio']
                     prod.agregar()
                     flash('¡ Producto agregada con exito !')
@@ -229,6 +230,7 @@ def editarProducto():
             prod.idCategorias=request.form['idCategorias']
             prod.nombre=request.form['nombre']
             prod.descripcion = request.form['desc']
+            prod.existencia = request.form['exist']
             prod.precio = request.form['precio']
             prod.editar()
             flash('¡ Producto editado con exito !')

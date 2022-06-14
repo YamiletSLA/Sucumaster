@@ -38,7 +38,9 @@ class Producto(db.Model):
     nombre=Column(String,nullable=False)
     descripcion=Column(String,nullable=True)
     precio=Column(Float,nullable=False)
+    existencia = Column(Integer, nullable=False)
     categoria=relationship('Categoria',backref='productos',lazy='select')
+
 
     def consultaGeneral(self):
         return self.query.all()
@@ -250,16 +252,19 @@ class Ventas(db.Model):
     idUsuario=Column(Integer,ForeignKey('usuario.idUsuario'))
     idProducto=Column(Integer,ForeignKey('Productos.idProducto'))
     idTipoPago=Column(Integer,ForeignKey('TipoPago.idTipoPago'))
+    idCliente=Column(Integer,ForeignKey('cliente.idCliente'))
     fecha=Column(Date,default=datetime.date.today())
     cantidad=Column(Integer,nullable=False,default=1)
     estatus=Column(String,nullable=False,default='Pendiente')
     producto=relationship('Producto',backref='ventas',lazy='select')
     usuario=relationship('Usuario',backref='ventas',lazy='select')
-    tipoPago=relationship('TipoPago',backref='ventas',lazy='select')
+    tipoPago=relationship('tipoPago',backref='ventas',lazy='select')
+    cliente=relationship('Clientes',backref='ventas',lazy='select')
 
     def agregarVenta(self):
         db.session.add(self)
         db.session.commit()
+
     def consultaGeneralCar(self,idUsuario):
         return self.query.filter(Ventas.idUsuario==idUsuario).all()
 

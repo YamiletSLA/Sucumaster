@@ -15,12 +15,12 @@
         <th>EDITAR</th>
 
         {% for user in user %}
-            {% if user.tipo == 'Vendedor' %}
+            {% if user.tipoUsuario == 'Vendedor' %}
             <tr>
                 <td>{{user.idUsuario}}</td>
                 <td>{{user.nombreCompleto}}</td>
                 <td>{{user.estatus}}</td>
-                <td>{{user.tipo}}</td>
+                <td>{{user.tipoUsuario}}</td>
                 <td>
                         <a href="/Usuarios/{{user.idUsuario}}">
                             <span class="glyphicon glyphicon-edit"></span>
