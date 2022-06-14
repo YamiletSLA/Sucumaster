@@ -249,11 +249,13 @@ class Ventas(db.Model):
     idVentas=Column(Integer,primary_key=True)
     idUsuario=Column(Integer,ForeignKey('usuario.idUsuario'))
     idProducto=Column(Integer,ForeignKey('Productos.idProducto'))
+    idTipoPago=Column(Integer,ForeignKey('TipoPago.idTipoPago'))
     fecha=Column(Date,default=datetime.date.today())
     cantidad=Column(Integer,nullable=False,default=1)
     estatus=Column(String,nullable=False,default='Pendiente')
     producto=relationship('Producto',backref='ventas',lazy='select')
     usuario=relationship('Usuario',backref='ventas',lazy='select')
+    tipoPago=relationship('TipoPago',backref='ventas',lazy='select')
 
     def agregarVenta(self):
         db.session.add(self)
