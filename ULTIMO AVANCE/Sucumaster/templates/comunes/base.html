@@ -1,0 +1,56 @@
+{% extends 'bootstrap/base.html' %}
+{% block title %}
+    ZARKET - Sucumaster
+{% endblock %}
+{% block styles %}
+    {{super()}}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+{% endblock %}
+{% block scripts %}
+    {{super()}}
+{% endblock %}
+<!-- Superior -->
+{% block navbar %}
+    <div class="wave" style="height: 120px; overflow: hidden;" ><svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;"><path d="M-7.05,65.63 C134.02,139.63 296.56,33.05 501.41,74.50 L500.00,0.00 L-4.79,-10.36 Z" style="stroke: none; fill: #9ac3df;"></path></svg></div>
+        <div class="jumbotron">
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <img src="{{url_for('static',filename='img/planta.jpg')}}" class="img-rounded img-responsive"
+                            width="70%">
+                    </div>
+                    <div class="col-md-8">
+
+                        <h1 class="txt-primary">SUCUMASTER</h1>
+                        <p><i>" ENCUENTRA TODO LO QUE NECESITAS "</i></p>
+
+                    </div>
+                    <div class="col-md-2">
+                        <img src="{{url_for('static',filename='img/planta.jpg')}}" class="img-rounded img-responsive"
+                            width="70%">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content%}
+    <div class="container">
+        <h1 class="text text-center">Bienvenido a la Tienda de Artesanias SucuMaster</h1>
+        {%block principal %}
+
+        {% endblock %}
+    {% block contenido %}
+        <!--Sistema de alertas de Bootstrap -->
+       {% if get_flashed_messages() %}
+       <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+           <strong>
+               {% for msg in get_flashed_messages() %}
+                    {{msg}}
+               {% endfor %}
+           </strong>
+        </div>
+       {% endif %}
+    {% endblock %}
+    </div>
+{% endblock %}

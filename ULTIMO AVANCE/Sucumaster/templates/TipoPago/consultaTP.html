@@ -1,0 +1,32 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+<div>
+    <h1 class="caja text-center">Tipo de Pagos</h1>
+    <table class="table table-condensed">
+        <th>TIPO DE PAGO</th>
+        <th>EDITAR</th>
+
+        {% for tipopa in tipopago %}
+            <tr class="active">
+                <td>{{tipopa.tipo}}</td>
+                <td>
+                    <a href="/TipoPago/{{tipopa.idTipoPago}}">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% if current_user.is_authenticated and current_user.is_admin() %}
+    <a href="/Tarjetas/nueva" class="btn btn-success">
+         <span class="glyphicon glyphicon-plus-sign"></span>
+        Agregar Tarjeta
+    </a>
+    {% endif %}
+</div>
+{% endblock %}

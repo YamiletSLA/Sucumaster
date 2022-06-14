@@ -1,0 +1,49 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+
+        <h1 class="caja text-center"><span style="font-size: 30pt;"> Registrar Especiales</span></h1>
+    <form action="/Especiales/nuevo" method="post" enctype="multipart/form-data">
+        <div class="imput-group " style="padding-left: 320pt;">
+              <h3>
+                  <label class="col-sm-3">Nombre:</label>
+                  <input type="text" required  name="nombre" placeholder="Ingrese Nombre" maxlength="20">
+                <br>
+                  <br>
+                  <label class="col-sm-3">Descripción: </label>
+                  <input type="text" required  name="descripcion" placeholder="Ingrese la descripción" maxlength="45">
+                <br>
+                <br>
+                  <label class="col-sm-3">Costo:</label>
+                  <input type="number" required  name="costo" placeholder="Ingrese costo" maxlength="10">
+                <br>
+                <br>
+                  <label class="col-sm-3">Existencia:</label>
+                  <input type="number" required  name="existencia" placeholder="Ingrese existencia" maxlength="13">
+                <br>
+
+              </h3>
+             <br>
+         </div>
+        <div class="text text-center">
+              <button type="submit" class="btn btn-primary btn-lg" role="button" ><img src="{{url_for('static',filename='imagenes/save.png')}}"> Guardar</button>
+            <a class="btn btn-primary btn-lg" href="/Especiales" role="button"><span class="glyphicon glyphicon-chevron-left"></span> Regresar</a>
+        </div>
+
+
+
+    </form>
+    {% if get_flashed_messages() %}
+        <div class="alert alert-success alert-dismissible">
+            {% for message in get_flashed_messages() %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{message}}</strong>
+            {% endfor %}
+       </div>
+
+    {% endif %}
+{% endblock %}

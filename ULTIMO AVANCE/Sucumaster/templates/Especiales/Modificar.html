@@ -1,0 +1,64 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+<Script>
+    function eliminar(Id,nombre){
+    resp=confirm("¿Estas seguro de eliminar el Especial "+  nombre  +" ?");
+        if(resp==true){
+        location.href="/Especiales/eliminar/"+Id
+        }
+        return;
+    }
+</Script>
+<h3 class="text text-center"><p class="text-success">Modificar Información</p></h3>
+    <form action="/Especiales/Modificar" method="post" enctype="multipart/form-data">
+         <div class="imput-group " style="padding-left: 290pt;">
+              <h3>
+                    <label class="col-sm-3">Id:</label>
+                        <input type="number" name="idEspeciales" readonly value="{{especial.idEspeciales}}" >
+                   <br>
+                   <br>
+                   <label class="col-sm-3">Nombre: </label>
+                        <input type="text" required  name="nombre"  placeholder="Ingrese nombre" value="{{especial.nombre}}" maxlength="20">
+                   <br>
+                   <br>
+                   <label class="col-sm-3">Descripción: </label>
+                        <input type="text" required  name="descripcion"  placeholder="Ingrese la descripción" value="{{especial.descripcion}}" maxlength="20">
+                   <br>
+                   <br>
+                   <label class="col-sm-3">Costo:</label>
+                        <input type="number" required  name="costo"  placeholder="Ingrese el costo" value="{{especial.costo}}" maxlength="10">
+                   <br>
+                   <br>
+                  <label class="col-sm-3">Existencia:</label>
+                        <input type="number" required  name="existencia"  placeholder="Ingrese la existencia" value="{{especial.existencia}}" maxlength="13">
+                   <br>
+                   <br>
+              </h3>
+             <br>
+         </div>
+        <div class="text text-center">
+
+                {%if current_user.is_authenticated and current_user.is_admin()%}
+                <button type="submit" class="btn btn-primary btn-lg" role="button"><img src="{{url_for('static',filename='imagenes/save.png')}}"> Modificar</button>
+                {% endif %}
+                <button type="button" class="btn btn-danger btn-lg" onclick="eliminar({{especial.idEspeciales}},'{{especial.nombre}}')" role="button"><img src="{{url_for('static',filename='imagenes/eliminar.png')}}"> Eliminar</button>
+
+
+
+             <a class="btn btn-primary btn-lg" href="/Especiales" role="button"><img src="{{url_for('static',filename='imagenes/prev.gif')}}"> Regresar</a>
+         </div>
+    </form>
+     {% if get_flashed_messages() %}
+         <div class="alert alert-success alert-dismissible">
+             {% for message in get_flashed_messages() %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{message}}</strong>
+            {% endfor %}
+         </div>
+     {% endif %}
+{% endblock %}

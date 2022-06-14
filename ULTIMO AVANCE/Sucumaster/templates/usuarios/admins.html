@@ -1,0 +1,43 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+<div>
+    <h1 class="caja text-center"><span style="font-size: 30pt;"> Administradores</span></h1>
+    {%if current_user.is_authenticated and current_user.is_admin()%}
+      <a href="/Usuarios/nuevo" class="btn btn-success">
+         <span class="glyphicon glyphicon-plus-sign"></span>
+        Agregar
+    </a>
+    {% endif %}
+     <br>
+    <table class="table table-bordered">
+        <th>ID</th>
+        <th>NOMBRE</th>
+        <th>USUARIO</th>
+        <th>TIPO</th>
+        <th>ESTATUS</th>
+        <th>EDITAR</th>
+
+        {% for user in usuario %}
+            {% if user.tipoUsuario == 'Administrador' %}
+            <tr>
+                <td>{{user.idUsuario}}</td>
+                <td>{{user.nombreCompleto}}</td>
+                <td>{{user.nombreUsuario}}</td>
+                <td>{{user.tipoUsuario}}</td>
+                <td>{{user.estatus}}</td>
+                <td>
+                        <a href="/Usuarios/{{user.idUsuario}}">
+                            <span class="glyphicon glyphicon-edit"></span> Detalles
+                        </a>
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

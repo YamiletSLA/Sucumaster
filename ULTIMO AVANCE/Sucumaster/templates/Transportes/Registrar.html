@@ -1,0 +1,36 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+<div>
+    <h1 class="caja text-center">Registro de Transportes</h1>
+    <form action="/Transportes/nuevo" method="post" enctype="multipart/form-data" onsubmit="return validar(this)">
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" required maxlength="60" placeholder="Nombre del transporte" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="Telefono">Teléfono:</label>
+            <input type="text" name="telefono" id="tel"  required maxlength="60"  placeholder="Teléfono" class="form-control">
+        </div>
+            <button type="submit" class="btn btn-default2">
+                <span class="glyphicon glyphicon-floppy-disk"></span>
+                Agregar
+            </button>
+            <a href="/Transportes" class="btn btn-default">
+                <span class="glyphicon glyphicon-circle-arrow-left"></span>
+                Cancelar
+            </a>
+    </form>
+
+</div>
+<div id="notificaciones" style="background-color:#FF0000">
+
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+    <script src="{{url_for('static',filename='js/Telefono.js')}}"></script>
+{% endblock %}

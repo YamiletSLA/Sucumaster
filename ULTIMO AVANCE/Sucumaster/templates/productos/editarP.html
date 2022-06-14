@@ -1,0 +1,63 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+<div>
+    <h1 class="bg-primary bg-lg text-center">Editar Producto</h1>
+    <form action="/Productos/editar" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>NOMBRE:</label>
+            <input type="text" name="nombre" required maxlength="60" placeholder="Nombre del producto" class="form-control" value="{{prod.nombre}}">
+        </div>
+        <div class="form-group">
+            <label>DESCRIPCIÓN:</label>
+            <input type="text" name="desc" required maxlength="60" placeholder="descripción" class="form-control" value="{{prod.descripcion}}">
+        </div>
+        <div class="form-group">
+            <label>EXISTENCIA:</label>
+            <input type="number" name="exist" required maxlength="60" placeholder="existencia" class="form-control" value="{{prod.existencia}}">
+        </div>
+        <div class="form-group">
+            <label>PRECIO:</label>
+            <input type="number" name="precio" required maxlength="60" placeholder="Precio" class="form-control" value="{{prod.precio}}">
+        </div>
+
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-floppy-disk"></span>
+                Guardar
+            </button>
+            <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#borrar">
+                <span class="glyphicon glyphicon-trash"></span>
+                Eliminar
+            </a>
+            <a href="/Productos" class="btn btn-info">
+                <span class="glyphicon glyphicon-arrow-left"></span>
+                Cancelar
+            </a>
+    </form>
+  </div>
+
+ <!-- Modal para ver el cuadro de dialogo de eliminar-->
+<div id="borrar" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Eliminación de Productos</h4>
+      </div>
+      <div class="modal-body">
+        <p>¿ Estas seguro de eliminar el producto:<b>{{prod.nombre}} ?</b> </p>
+      </div>
+      <div class="modal-footer">
+          <a class="btn btn-primary" href="/Productos/eliminar/{{prod.idProducto}}">Aceptar</a>
+          <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+<div>
+    <h1 class="caja text-center">Transportes</h1>
+    <table class="table table-condensed">
+        <th>NOMBRE</th>
+        <th>TELÉFONO</th>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
+        <th>ESTATUS</th>
+        <th>EDITAR</th>
+        {% endif %}
+        {% for trans in transportes %}
+                <tr class="active">
+                    <td>{{trans.nombre}}</td>
+                    <td>{{trans.telefono}}</td>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                    <td>{{trans.estatus}}</td>
+                     <td>
+                        <a href="/Transportes/{{trans.idTransportes}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                     </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    {% if current_user.is_authenticated and current_user.is_admin() %}
+    <a href="/Transportes/Registrar" class="btn btn-success">
+         <span class="glyphicon glyphicon-plus-sign"></span>
+        Agregar Transporte
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
