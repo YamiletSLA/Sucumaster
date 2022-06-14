@@ -397,3 +397,32 @@ class Especiales(db.Model):
     #     return self.query.order_by(Transportes.idTransportes.asc()).paginate(pagina, per_page=5, error_out=False).items
     #     # return self.query.all()
 
+class Estante(db.Model):
+    __tablename__ = 'Estante'
+    idEstante = Column(Integer, primary_key=True)
+    nombre = Column(String(3))
+    ubicacion=Column(String(3))
+
+    def consultaGeneral(self):
+        return self.query.all()
+
+    def agregar(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def editar(self):
+        db.session.merge(self)
+        db.session.commit()
+
+    def consultaIndividual(self,id):
+        return Estante.query.get(id)
+
+    def eliminar(self,id):
+        paq=self.consultaIndividual(id)
+        db.session.delete(paq)
+        db.session.commit()
+
+    def eliminacionLogica(self,id):
+        paq = self.consultaIndividual(id)
+        paq.estatus='Inactiva'
+        paq.editar()
