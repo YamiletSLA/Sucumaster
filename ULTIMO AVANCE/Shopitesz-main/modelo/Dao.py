@@ -39,14 +39,15 @@ class Producto(db.Model):
     descripcion=Column(String,nullable=True)
     precio=Column(Float,nullable=False)
     existencia = Column(Integer, nullable=False)
+    estatus=Column(String, nullable=False)
     categoria=relationship('Categoria',backref='productos',lazy='select')
 
 
     def consultaGeneral(self):
-        return self.query.all()
+        return self.query.filter(Producto.estatus == 'Activo').all()
 
     def consultarProductosPorCategoria(self, idCategorias):
-        return self.query.filter(Producto.idCategorias == idCategorias).all()
+        return self.query.filter(Producto.idCategorias == idCategorias, Producto.estatus == 'Activo').all()
 
     def consultaIndividual(self,id):
         return Producto.query.get(id)
@@ -63,6 +64,11 @@ class Producto(db.Model):
     def editar(self):
         db.session.merge(self)
         db.session.commit()
+
+    def eliminacionLogica(self, id):
+        tar = self.consultaIndividual(id)
+        tar.estatus = 'Inactivo'
+        tar.editar()
 
 
 class Usuario(UserMixin,db.Model):

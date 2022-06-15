@@ -24,7 +24,6 @@
                 Cancelar
             </a>
     </form>
-/*DUDA AQUI ABAJO*/
     {% if get_flashed_messages() %}
         <div class="alert alert-success alert-dismissible">
             {% for message in get_flashed_messages() %}
@@ -34,4 +33,5 @@
        </div>
 
     {% endif %}
+</div>
 {% endblock %}

@@ -23,6 +23,10 @@
             <label>PRECIO:</label>
             <input type="number" name="precio" required maxlength="60" placeholder="Precio" class="form-control" value="{{prod.precio}}">
         </div>
+        <div class="form-group">
+            <label>ESTATUS:</label>
+            <input type="text" name="estatus" required maxlength="60" placeholder="estatus" class="form-control" value="{{prod.estatus}}">
+        </div>
 
             <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-floppy-disk"></span>
@@ -32,7 +36,7 @@
                 <span class="glyphicon glyphicon-trash"></span>
                 Eliminar
             </a>
-            <a href="/Productos" class="btn btn-info">
+            <a href="/productos" class="btn btn-info">
                 <span class="glyphicon glyphicon-arrow-left"></span>
                 Cancelar
             </a>

@@ -102,7 +102,7 @@ function validarCantidad(existencia,precio){
         document.getElementById("notificaciones").style.color="red";
     }
 }
-function agregarCarrito(){
+function agregarVentas(){
     var carrito={idProducto:document.getElementById("id").value,
                  cantidad:document.getElementById("cantidad").value};
     var json=JSON.stringify(carrito);

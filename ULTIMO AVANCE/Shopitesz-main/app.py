@@ -188,12 +188,22 @@ def consultarProductosPorCategoria(id):
 @app.route('/producto/<int:id>')
 def consultarProducto(id):
     if current_user.is_authenticated and  current_user.is_admin():
-        prod=Producto()
-        prod.consultaIndividual(id)
-        return render_template('productos/editarP.html',prod=prod.consultaIndividual(id))
+        prod = Producto()
+        prod = prod.consultaIndividual(id)
+        dict_producto = {"idProducto": prod.idProducto, "nombre": prod.nombre, "descripcion": prod.descripcion,
+                         "precio": prod.precio, "existencia": prod.existencia}
+        return json.dumps(dict_producto)
     else:
-        msg={"estatus":"error","mensaje":"Debes iniciar sesion"}
+        msg = {"estatus": "error", "mensaje": "Debes iniciar sesion"}
         return json.dumps(msg)
+
+@app.route('/producto/ver/<int:id>')
+def consultarProd(id):
+    if current_user.is_authenticated and  current_user.is_admin():
+        prod=Producto()
+        return render_template('productos/editarP.html', prod=prod.consultaIndividual(id))
+    else:
+        return redirect(url_for('mostrar_login'))
 
 @app.route('/Productos/nuevo')
 @login_required
@@ -216,6 +226,7 @@ def agregarProducto():
                     prod.descripcion=request.form['desc']
                     prod.existencia = request.form['exist']
                     prod.precio=request.form['precio']
+                    prod.estatus = 'Activo'
                     prod.agregar()
                     flash('¡ Producto agregada con exito !')
                 except:
@@ -240,6 +251,8 @@ def editarProducto():
             prod.descripcion = request.form['desc']
             prod.existencia = request.form['exist']
             prod.precio = request.form['precio']
+            prod.estatus = request.form['estatus']
+            prod.estatus = request.values.get("estatus", "Inactivo")
             prod.editar()
             flash('¡ Producto editado con exito !')
         except:
@@ -570,7 +583,7 @@ def agregarProductoVenta(data):
     msg=''
     if current_user.is_authenticated and current_user.is_admin():
         datos=json.loads(data)
-        carrito=Ventas
+        carrito=Ventas()
         carrito.idProducto=datos['idProducto']
         carrito.idUsuario=current_user.idUsuario
         carrito.cantidad=datos['cantidad']
