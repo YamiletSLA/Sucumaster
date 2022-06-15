@@ -1,0 +1,43 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+{{super()}}
+<div>
+    <h1 class="caja text-center">Almacen</h1>
+    <table class="table table-condensed">
+        <thead>
+        <th>ID</th>
+        <th>Cantidad Producto</th>
+        <th>Categoria</th>
+        <th>Estante</th>
+       {%if current_user.is_authenticated and current_user.is_admin()%}
+            <th>Modificar</th>
+       {% endif %}
+        </thead>
+        {% for alm in almacen %}
+                <tr class="active">
+                    <td>{{alm.idAlmacen}}</td>
+                    <td>{{alm.cantProducto}}</td>
+                    <td>{{alm.Categoria}}</td>
+                    <td>{{alm.Estante}}</td>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                       <td> <a href="/Almacen/{{alm.idAlmacen}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                     </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    {% if current_user.is_authenticated and current_user.is_admin() %}
+    <a href="/Almacen/Registrar" class="btn btn-success">
+         <span class="glyphicon glyphicon-plus-sign"></span>
+        Agregar Almacen
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+

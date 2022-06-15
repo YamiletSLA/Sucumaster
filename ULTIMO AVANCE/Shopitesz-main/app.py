@@ -3,7 +3,7 @@ from urllib import request
 
 from flask import Flask,render_template,request,redirect,url_for,flash,session,abort
 from flask_bootstrap import Bootstrap
-from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante, Almacen
 from flask_login import login_required,login_user,logout_user,current_user,LoginManager
 import json
 
@@ -878,6 +878,49 @@ def eliminarEstante(id):
     e=Estante()
     e.eliminar(id)
     return render_template('Estante/Consultar.html', estantes=e.consultaGeneral())
+
+##ALMACEN
+@app.route('/Almacen')
+def consultaGeneralAlmacen():
+    al=Almacen()
+    return render_template('Almacen/Consultar.html',almacen=al.consultaGeneral())
+
+@app.route('/Almacen/Registrar')
+def RegistrarAlmacen():
+    return render_template('Almacen/Registrar.html')
+
+@app.route('/Almacen/nuevo',methods=['post'])
+def nuevoAlmacen():
+    al = Almacen()
+    al.cantProducto = request.form['cantProducto']
+    al.Categoria = request.form['Categoria']
+    al.Estante = request.form['Estante']
+    al.agregar()
+    flash('Almacen registrado con exito')
+    return render_template('Almacen/Registrar.html')
+
+@app.route('/Almacen/<int:id>')
+def ConsultaIndAlmacen(id):
+    al = Almacen()
+    return render_template('Almacen/Modificar.html',alm=al.consultaIndividual(id))
+
+@app.route('/Almacen/Modificar',methods=['post'])
+def ModificarAlmacen():
+    al= Almacen()
+    al.idAlmacen = request.form['idAlmacen']
+    al.cantProducto = request.form['cantProducto']
+    al.Categoria = request.form['Categoria']
+    al.Estante = request.form['Estante']
+    al.editar()
+    flash('Modificacion de Almacen realizada con exito')
+    return render_template('Almacen/Modificar.html',alm=al)
+
+@app.route('/Almacen/eliminar/<int:id>')
+def eliminarAlmacen(id):
+    al=Almacen()
+    al.eliminar(id)
+    return render_template('Almacen/Consultar.html', almacen=al.consultaGeneral())
+
 
 
 

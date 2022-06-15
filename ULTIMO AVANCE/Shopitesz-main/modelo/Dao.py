@@ -432,3 +432,33 @@ class Estante(db.Model):
         paq = self.consultaIndividual(id)
         paq.estatus='Inactiva'
         paq.editar()
+
+class Almacen(db.Model):
+    __tablename__='almacen'
+    idAlmacen = Column(Integer, primary_key=True)
+    cantProducto = Column(Integer,nullable=False)
+    Categoria = Column(String, nullable=False)
+    Estante = Column(String, nullable=False)
+
+    def agregar(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def consultaIndividual(self,id):
+        return self.query.get(id)
+
+    def editar(self):
+        db.session.merge(self)
+        db.session.commit()
+
+    def eliminar(self,id):
+        obj = self.consultaIndividual(id)
+        db.session.delete(obj)
+        db.session.commit()
+
+    def actualizar(self):
+        db.session.merge(self)
+        db.session.commit()
+
+    def consultaGeneral(self):
+        return self.query.all()
