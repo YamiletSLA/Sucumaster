@@ -12,6 +12,8 @@
         <th>TELÉFONO</th>
         {% if current_user.is_authenticated and current_user.is_admin() %}
         <th>ESTATUS</th>
+        {% endif %}
+        {% if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor() %}
         <th>EDITAR</th>
         {% endif %}
         {% for trans in transportes %}
@@ -20,6 +22,8 @@
                     <td>{{trans.telefono}}</td>
                 {% if current_user.is_authenticated and current_user.is_admin() %}
                     <td>{{trans.estatus}}</td>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor() %}
                      <td>
                         <a href="/Transportes/{{trans.idTransportes}}">
                             <span class="glyphicon glyphicon-edit"></span>

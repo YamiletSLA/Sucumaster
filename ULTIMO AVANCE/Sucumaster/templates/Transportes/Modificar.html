@@ -24,13 +24,15 @@
                 <span class="glyphicon glyphicon-floppy-disk"></span>
                 Guardar
             </button>
+            {% if current_user.is_authenticated and current_user.is_admin() %}
             <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#borrar">
                 <span class="glyphicon glyphicon-trash"></span>
                 Eliminar
             </a>
+            {% endif %}
             <a href="/Transportes" class="btn btn-info">
                 <span class="glyphicon glyphicon-arrow-left"></span>
-                Cancelar
+                Regresar
             </a>
     </form>
   </div>

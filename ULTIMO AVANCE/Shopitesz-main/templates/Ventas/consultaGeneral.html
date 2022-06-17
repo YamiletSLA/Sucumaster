@@ -1,0 +1,38 @@
+{% extends 'comunes/base.html' %}
+{% block navbar %}
+    {{super()}}
+    {% include 'comunes/menu.html' %}
+{% endblock %}
+{% block contenido %}
+    <h1>Detalle de Venta</h1>
+    <div class="table-responsive">
+    <table class="table">
+        <thead>
+
+            <th>PRODUCTO</th>
+            <th>UNIDADES</th>
+            <th>PRECIO</th>
+            <th>TOTAL</th>
+            <th>FECHA DE REGISTRO</th>
+            <th>EDITAR</th>
+        </thead>
+        {% for prod in venta %}
+            <tr>
+
+                <td>{{prod.producto.nombre}}</td>
+                <td>{{prod.cantidad}}</td>
+                <td>{{prod.producto.precio}}</td>
+                <td>{{prod.producto.precio * prod.cantidad}}</td>
+                <td>{{prod.fecha}}</td>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                <td>
+                  <a href="/Venta/consultaventa/{{prod.idVentas}}">
+                      <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+{% endblock %}

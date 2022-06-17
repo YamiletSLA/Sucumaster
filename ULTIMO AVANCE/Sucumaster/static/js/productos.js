@@ -102,11 +102,13 @@ function validarCantidad(existencia,precio){
         document.getElementById("notificaciones").style.color="red";
     }
 }
-function agregarCarrito(){
-    var carrito={idProducto:document.getElementById("id").value,
-                 cantidad:document.getElementById("cantidad").value};
-    var json=JSON.stringify(carrito);
-    var url='/carrito/agregar/'+encodeURI(json);
+function agregarVentas(){
+    var ventas={idProducto:document.getElementById("id").value,
+                 cantidad:document.getElementById("cantidad").value,
+                 total:document.getElementById("total").value};
+
+    var json=JSON.stringify(ventas);
+    var url='/Venta/agregar/'+encodeURI(json);
     alert(url);
     var ajax=new XMLHttpRequest();
     ajax.open("get",url,true);

@@ -10,13 +10,13 @@
 
     <table class="table table-striped">
         <th>NOMBRE</th>
-        {% if current_user.is_authenticated and current_user.is_admin() %}
+        {% if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista() %}
         <th>EDITAR</th>
         {% endif %}
         {% for cat in categorias %}
             <tr>
                 <td>{{cat.nombre}}</td>
-                {% if current_user.is_authenticated and current_user.is_admin() %}
+                {% if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista() %}
                     <td>
                         <a href="/Categorias/{{cat.idCategorias}}">
                             <span class="glyphicon glyphicon-edit"></span>
@@ -26,7 +26,7 @@
             </tr>
         {% endfor %}
     </table>
-    {% if current_user.is_authenticated and current_user.is_admin() %}
+    {% if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista() %}
     <a href="/Categorias/nueva" class="btn btn-success">
          <span class="glyphicon glyphicon-plus-sign"></span>
         Agregar Categoria

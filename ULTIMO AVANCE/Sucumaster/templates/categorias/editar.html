@@ -15,6 +15,7 @@
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" required maxlength="60" placeholder="Nombre de Categoria" class="form-control" value="{{cat.nombre}}">
         </div>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
             <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-floppy-disk"></span>
                 Guardar
@@ -23,9 +24,10 @@
                 <span class="glyphicon glyphicon-trash"></span>
                 Eliminar
             </a>
+        {% endif %}
             <a href="/Categorias" class="btn btn-info">
                 <span class="glyphicon glyphicon-arrow-left"></span>
-                Cancelar
+                Regresar
             </a>
     </form>
 

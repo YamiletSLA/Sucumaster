@@ -3,7 +3,11 @@ from urllib import request
 
 from flask import Flask,render_template,request,redirect,url_for,flash,session,abort
 from flask_bootstrap import Bootstrap
-from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante
+<<<<<<< HEAD
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, detalleVenta, DetallePedidos, Clientes, Especiales, Estante
+=======
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante, Almacen
+>>>>>>> 82eec4e935de4d136fdb567ea30c55d6dd0d16d5
 from flask_login import login_required,login_user,logout_user,current_user,LoginManager
 import json
 
@@ -362,7 +366,7 @@ def eliminarCategoria(id):
 
 @app.route('/Pedidos')
 def consultarPedidos():
-    ped=Pedidos()
+    ped=detalleVenta()
     return render_template('pedidos/consultaGeneral.html',pedidos=ped.consultaGeneral())
 
 @app.route('/Pedidos/agregar',methods=['post'])
@@ -372,14 +376,12 @@ def agregarPedidos():
         if current_user.is_authenticated:
             if current_user.is_authenticated:
                 try:
-                    ped=Pedidos()
-                    ped.idComprador=request.form['idComprador']
-                    ped.idVendedor = request.form['idVendedor']
-                    ped.idTarjeta = request.form['idTarjeta']
+                    ped=detalleVenta()
+                    ped.idUsuario=request.form['idUsuario']
+                    ped.idVentas = request.form['idVentas']
                     ped.fechaRegistro = request.form['fechaRegistro']
-                    ped.fechaAtencion = request.form['fechaAtencion']
+                    ped.fechaRecepcion = request.form['fechaRecepción']
                     ped.fechaCierre = request.form['fechaCierre']
-                    ped.fechaRecepcion = request.form['fechaRecepcion']
                     ped.total = request.form['total']
                     ped.estatus='Pendiente'
                     ped.agregar()
@@ -400,7 +402,7 @@ def agregarPedidos():
 @login_required
 def consultarPedido(id):
     if current_user.is_authenticated:
-        ped=Pedidos()
+        ped=detalleVenta()
         return render_template('pedidos/editar.html',ped=ped.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
@@ -411,13 +413,11 @@ def consultarPedido(id):
 def editarPedido():
     if current_user.is_authenticated:
         try:
-            ped=Pedidos()
+            ped=detalleVenta()
             ped.idPedido = request.form['idPedido']
-            ped.idComprador = request.form['idComprador']
-            ped.idVendedor = request.form['idVendedor']
-            ped.idTarjeta = request.form['idTarjeta']
+            ped.idUsuario = request.form['idUsuario']
+            ped.idVentas = request.form['idVentas']
             ped.fechaRegistro = request.form['fechaRegistro']
-            ped.fechaAtencion = request.form['fechaAtencion']
             ped.fechaCierre = request.form['fechaCierre']
             ped.fechaRecepcion = request.form['fechaRecepcion']
             ped.total = request.form['total']
@@ -436,7 +436,7 @@ def editarPedido():
 def eliminarPedido(id):
     if current_user.is_authenticated:
         try:
-            ped=Pedidos()
+            ped=detalleVenta()
             ped.eliminar(id)
             flash('Pedido eliminado con exito')
         except:
@@ -583,11 +583,11 @@ def agregarProductoVenta(data):
     msg=''
     if current_user.is_authenticated and current_user.is_admin():
         datos=json.loads(data)
-        carrito=Ventas()
-        carrito.idProducto=datos['idProducto']
-        carrito.idUsuario=current_user.idUsuario
-        carrito.cantidad=datos['cantidad']
-        carrito.agregarVenta()
+        v=Ventas()
+        v.idProducto=datos['idProducto']
+        v.idUsuario=current_user.idUsuario
+        v.cantidad=datos['cantidad']
+        v.agregarVenta()
         msg={'estatus':'ok','mensaje':'Producto agregado a la venta.'}
     else:
         msg = {"estatus": "error", "mensaje": "Debes iniciar sesion"}
@@ -597,17 +597,17 @@ def agregarProductoVenta(data):
 @login_required
 def consultarVenta():
     if current_user.is_authenticated:
-        carrito = Ventas()
-        return render_template('carrito/consultaGeneral.html',venta=carrito.consultaGeneralCar(current_user.idUsuario))
+        v = Ventas()
+        return render_template('Ventas/consultaGeneral.html',venta=v.consultaGeneral())
     else:
         return redirect(url_for('mostrar_login'))
 
-@app.route('/Venta/consultacarrito/<int:id>')
+@app.route('/Venta/consultaventa/<int:id>')
 @login_required
 def consultaVenta(id):
-    carrito = Ventas()
+    v = Ventas()
     if current_user.is_authenticated and current_user.is_admin():
-        return render_template('carrito/editarCarrito.html', ventas=carrito.consultaIndividuall(id))
+        return render_template('Ventas/editarV.html', ventas=v.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
 
@@ -626,7 +626,7 @@ def editarVenta():
             car.editar()
             flash('¡ Carrito editado con exito !')
         except:
-            flash('¡ Error al editar el carrito !')
+            flash('¡ Error al editar el Ventas !')
         return redirect(url_for('consultarCesta'))
     else:
         return redirect(url_for('mostrar_login'))
@@ -638,9 +638,9 @@ def eliminarCarrito(id):
         try:
             carrito=Ventas()
             carrito.eliminarProductoDeVenta(id)
-            flash('Elemento del carrito eliminada con exito')
+            flash('Elemento del Ventas eliminada con exito')
         except:
-            flash('Error al eliminar el elemento del carrito')
+            flash('Error al eliminar el elemento del Ventas')
         return redirect(url_for('consultarCesta'))
     else:
         return redirect(url_for('mostrar_login'))
@@ -878,6 +878,49 @@ def eliminarEstante(id):
     e=Estante()
     e.eliminar(id)
     return render_template('Estante/Consultar.html', estantes=e.consultaGeneral())
+
+##ALMACEN
+@app.route('/Almacen')
+def consultaGeneralAlmacen():
+    al=Almacen()
+    return render_template('Almacen/Consultar.html',almacen=al.consultaGeneral())
+
+@app.route('/Almacen/Registrar')
+def RegistrarAlmacen():
+    return render_template('Almacen/Registrar.html')
+
+@app.route('/Almacen/nuevo',methods=['post'])
+def nuevoAlmacen():
+    al = Almacen()
+    al.cantProducto = request.form['cantProducto']
+    al.Categoria = request.form['Categoria']
+    al.Estante = request.form['Estante']
+    al.agregar()
+    flash('Almacen registrado con exito')
+    return render_template('Almacen/Registrar.html')
+
+@app.route('/Almacen/<int:id>')
+def ConsultaIndAlmacen(id):
+    al = Almacen()
+    return render_template('Almacen/Modificar.html',alm=al.consultaIndividual(id))
+
+@app.route('/Almacen/Modificar',methods=['post'])
+def ModificarAlmacen():
+    al= Almacen()
+    al.idAlmacen = request.form['idAlmacen']
+    al.cantProducto = request.form['cantProducto']
+    al.Categoria = request.form['Categoria']
+    al.Estante = request.form['Estante']
+    al.editar()
+    flash('Modificacion de Almacen realizada con exito')
+    return render_template('Almacen/Modificar.html',alm=al)
+
+@app.route('/Almacen/eliminar/<int:id>')
+def eliminarAlmacen(id):
+    al=Almacen()
+    al.eliminar(id)
+    return render_template('Almacen/Consultar.html', almacen=al.consultaGeneral())
+
 
 
 

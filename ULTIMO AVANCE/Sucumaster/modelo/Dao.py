@@ -39,14 +39,15 @@ class Producto(db.Model):
     descripcion=Column(String,nullable=True)
     precio=Column(Float,nullable=False)
     existencia = Column(Integer, nullable=False)
+    estatus=Column(String, nullable=False)
     categoria=relationship('Categoria',backref='productos',lazy='select')
 
 
     def consultaGeneral(self):
-        return self.query.all()
+        return self.query.filter(Producto.estatus == 'Activo').all()
 
     def consultarProductosPorCategoria(self, idCategorias):
-        return self.query.filter(Producto.idCategorias == idCategorias).all()
+        return self.query.filter(Producto.idCategorias == idCategorias, Producto.estatus == 'Activo').all()
 
     def consultaIndividual(self,id):
         return Producto.query.get(id)
@@ -63,6 +64,11 @@ class Producto(db.Model):
     def editar(self):
         db.session.merge(self)
         db.session.commit()
+
+    def eliminacionLogica(self, id):
+        tar = self.consultaIndividual(id)
+        tar.estatus = 'Inactivo'
+        tar.editar()
 
 
 class Usuario(UserMixin,db.Model):
@@ -117,7 +123,7 @@ class Usuario(UserMixin,db.Model):
             return True
         else:
             return False
-    def is_almecenista(self):
+    def is_almacenista(self):
         if self.tipoUsuario=='Almacenista':
             return True
         else:
@@ -162,25 +168,22 @@ class Usuario(UserMixin,db.Model):
 
 
 
-class Pedidos(db.Model):
-    __tablename__='Pedidos'
-    idPedido=Column(Integer,primary_key=True)
-    idComprador = Column(Integer, ForeignKey('Usuarios.idUsuario'))
-    idVendedor = Column(Integer, ForeignKey('Usuarios.idUsuario'))
-    idTarjeta = Column(Integer, ForeignKey('Tarjetas.idTarjeta'))
-    fechaRegistro = Column(String, nullable=False)
-    fechaAtencion = Column(String, nullable=False)
-    fechaRecepcion = Column(String, nullable=False)
-    fechaCierre = Column(String, nullable=False)
+class detalleVenta(db.Model):
+    __tablename__='DetalleVenta'
+    idDetalleVenta=Column(Integer,primary_key=True)
+    idUsuario = Column(Integer, ForeignKey('usuario.idUsuario'))
+    idVentas = Column(Integer, ForeignKey('ventas.idVentas'))
+    fechaRegistro = Column(Date,default=datetime.date.today())
+    fechaCierre = Column(Date)
     total = Column(Float, nullable=False)
     estatus = Column(String, nullable=False)
 
-    def consultaGeneral(self):
+    def consultaGeneralDV(self):
         return self.query.all()
         #return self.query.filter(Categoria.estatus=='Activa').all()
 
     def consultaIndividuall(self,id):
-        return Pedidos.query.get(id)
+        return detalleVenta.query.get(id)
 
     def agregar(self):
         db.session.add(self)
@@ -261,22 +264,19 @@ class Ventas(db.Model):
     idVentas=Column(Integer,primary_key=True)
     idUsuario=Column(Integer,ForeignKey('usuario.idUsuario'))
     idProducto=Column(Integer,ForeignKey('Productos.idProducto'))
-    idTipoPago=Column(Integer,ForeignKey('TipoPago.idTipoPago'))
-    idCliente=Column(Integer,ForeignKey('cliente.idCliente'))
     fecha=Column(Date,default=datetime.date.today())
     cantidad=Column(Integer,nullable=False,default=1)
+    total=Column(Integer,nullable=False)
     estatus=Column(String,nullable=False,default='Pendiente')
     producto=relationship('Producto',backref='ventas',lazy='select')
     usuario=relationship('Usuario',backref='ventas',lazy='select')
-    tipoPago=relationship('tipoPago',backref='ventas',lazy='select')
-    cliente=relationship('Clientes',backref='ventas',lazy='select')
 
     def agregarVenta(self):
         db.session.add(self)
         db.session.commit()
 
-    def consultaGeneralCar(self,idUsuario):
-        return self.query.filter(Ventas.idUsuario==idUsuario).all()
+    def consultaGeneral(self):
+        return self.query.all()
 
     def consultaIndividuall(self,id):
         return Ventas.query.get(id)
@@ -290,44 +290,7 @@ class Ventas(db.Model):
         db.session.merge(self)
         db.session.commit()
 
-class DetallePedidos(db.Model):
-    __tablename__='detallepedidos'
-    idDetalle=Column(Integer,primary_key=True)
-    idPedido=Column(Integer,ForeignKey('Pedidos.idPedido'))
-    idProducto = Column(Integer, ForeignKey('Productos.idProducto'))
-    precio = Column(Float, nullable=False)
-    cantidadPedida=Column(Integer, nullable=False)
-    cantidadEnviada=Column(Integer, nullable=False)
-    cantidadAceptada = Column(Integer, nullable=False)
-    cantidadRechazada = Column(Integer, nullable=False)
-    subtotal = Column(Float, nullable=False)
-    estatus=Column(String, nullable=False)
-    comentario = Column(String, nullable=False)
-    producto = relationship('Producto',backref='DetallePedidos',lazy='select')
 
-    def consultaDetallesPedido(self):
-        return self.query.all()
-
-    def agregar(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def editar(self):
-        db.session.merge(self)
-        db.session.commit()
-
-    def consultaIndividuall(self,id):
-        return DetallePedidos.query.get(id)
-
-    def eliminar(self,id):
-        detped=self.consultaIndividuall(id)
-        db.session.delete(detped)
-        db.session.commit()
-
-    def eliminacionLogica(self,id):
-        paq = self.consultaIndividuall(id)
-        paq.estatus='Cancelado'
-        paq.editar()
 
 ######CLIENTES
 ##################Clientes

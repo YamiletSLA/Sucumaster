@@ -8,6 +8,10 @@
     <h1 class="bg-primary bg-lg text-center">Editar Producto</h1>
     <form action="/Productos/editar" method="post" enctype="multipart/form-data">
         <div class="form-group">
+            <label>CATEGORIA:</label>
+            <input type="number" name="idCategorias" required maxlength="60" placeholder="Categoria" class="form-control" value="{{prod.idCategorias}}">
+        </div>
+        <div class="form-group">
             <label>NOMBRE:</label>
             <input type="text" name="nombre" required maxlength="60" placeholder="Nombre del producto" class="form-control" value="{{prod.nombre}}">
         </div>
@@ -23,7 +27,11 @@
             <label>PRECIO:</label>
             <input type="number" name="precio" required maxlength="60" placeholder="Precio" class="form-control" value="{{prod.precio}}">
         </div>
-
+        <div class="form-group">
+            <label>ESTATUS:</label>
+            <input type="text" name="estatus" required maxlength="60" placeholder="estatus" class="form-control" value="{{prod.estatus}}">
+        </div>
+        {% if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista() %}
             <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-floppy-disk"></span>
                 Guardar
@@ -32,9 +40,10 @@
                 <span class="glyphicon glyphicon-trash"></span>
                 Eliminar
             </a>
-            <a href="/Productos" class="btn btn-info">
+        {% endif %}
+            <a href="/productos" class="btn btn-info">
                 <span class="glyphicon glyphicon-arrow-left"></span>
-                Cancelar
+                Regresar
             </a>
     </form>
   </div>

@@ -9,16 +9,19 @@
     <h1 class="caja text-center">Tipo de Pagos</h1>
     <table class="table table-condensed">
         <th>TIPO DE PAGO</th>
+        {% if current_user.is_authenticated and current_user.is_admin() %}
         <th>EDITAR</th>
-
+        {% endif %}
         {% for tipopa in tipopago %}
             <tr class="active">
                 <td>{{tipopa.tipo}}</td>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
                 <td>
                     <a href="/TipoPago/{{tipopa.idTipoPago}}">
                         <span class="glyphicon glyphicon-edit"></span>
                     </a>
                 </td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>

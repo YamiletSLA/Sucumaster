@@ -26,7 +26,7 @@
             <th>Direccion </th>
             <th>Telefono </th>
             <th>RFC </th>
-            {%if current_user.is_authenticated and current_user.is_admin()%}
+            {%if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor() %}
             <th>Modificar</th>
             {% endif %}
         </thead>
@@ -37,7 +37,7 @@
                     <td>{{client.direccion}}</td>
                     <td>{{client.telefono}}</td>
                      <td>{{client.RFC}}</td>
-                    {%if current_user.is_authenticated and current_user.is_admin()%}
+                    {%if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor() %}
 
                     <td><a href="/Clientes/Ver/{{client.idCliente}}"><span class="glyphicon glyphicon-edit"> </span> Detalles </a></td>
                     {% endif %}

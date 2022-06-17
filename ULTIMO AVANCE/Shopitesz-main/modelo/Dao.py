@@ -168,16 +168,14 @@ class Usuario(UserMixin,db.Model):
 
 
 
-class Pedidos(db.Model):
-    __tablename__='Pedidos'
+class detalleVenta(db.Model):
+    __tablename__='DetalleVenta'
     idPedido=Column(Integer,primary_key=True)
-    idComprador = Column(Integer, ForeignKey('Usuarios.idUsuario'))
-    idVendedor = Column(Integer, ForeignKey('Usuarios.idUsuario'))
-    idTarjeta = Column(Integer, ForeignKey('Tarjetas.idTarjeta'))
-    fechaRegistro = Column(String, nullable=False)
-    fechaAtencion = Column(String, nullable=False)
+    idUsuario = Column(Integer, ForeignKey('usuario.idUsuario'))
+    idVentas = Column(Integer, ForeignKey('ventas.idVentas'))
+    fechaRegistro = Column(Date,default=datetime.date.today())
     fechaRecepcion = Column(String, nullable=False)
-    fechaCierre = Column(String, nullable=False)
+    fechaCierre = Column(Date)
     total = Column(Float, nullable=False)
     estatus = Column(String, nullable=False)
 
@@ -186,7 +184,7 @@ class Pedidos(db.Model):
         #return self.query.filter(Categoria.estatus=='Activa').all()
 
     def consultaIndividuall(self,id):
-        return Pedidos.query.get(id)
+        return detalleVenta.query.get(id)
 
     def agregar(self):
         db.session.add(self)
@@ -267,22 +265,18 @@ class Ventas(db.Model):
     idVentas=Column(Integer,primary_key=True)
     idUsuario=Column(Integer,ForeignKey('usuario.idUsuario'))
     idProducto=Column(Integer,ForeignKey('Productos.idProducto'))
-    idTipoPago=Column(Integer,ForeignKey('TipoPago.idTipoPago'))
-    idCliente=Column(Integer,ForeignKey('cliente.idCliente'))
     fecha=Column(Date,default=datetime.date.today())
     cantidad=Column(Integer,nullable=False,default=1)
     estatus=Column(String,nullable=False,default='Pendiente')
     producto=relationship('Producto',backref='ventas',lazy='select')
     usuario=relationship('Usuario',backref='ventas',lazy='select')
-    tipoPago=relationship('tipoPago',backref='ventas',lazy='select')
-    cliente=relationship('Clientes',backref='ventas',lazy='select')
 
     def agregarVenta(self):
         db.session.add(self)
         db.session.commit()
 
-    def consultaGeneralCar(self,idUsuario):
-        return self.query.filter(Ventas.idUsuario==idUsuario).all()
+    def consultaGeneral(self):
+        return self.query.all()
 
     def consultaIndividuall(self,id):
         return Ventas.query.get(id)
@@ -432,3 +426,33 @@ class Estante(db.Model):
         paq = self.consultaIndividual(id)
         paq.estatus='Inactiva'
         paq.editar()
+
+class Almacen(db.Model):
+    __tablename__='almacen'
+    idAlmacen = Column(Integer, primary_key=True)
+    cantProducto = Column(Integer,nullable=False)
+    Categoria = Column(String, nullable=False)
+    Estante = Column(String, nullable=False)
+
+    def agregar(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def consultaIndividual(self,id):
+        return self.query.get(id)
+
+    def editar(self):
+        db.session.merge(self)
+        db.session.commit()
+
+    def eliminar(self,id):
+        obj = self.consultaIndividual(id)
+        db.session.delete(obj)
+        db.session.commit()
+
+    def actualizar(self):
+        db.session.merge(self)
+        db.session.commit()
+
+    def consultaGeneral(self):
+        return self.query.all()

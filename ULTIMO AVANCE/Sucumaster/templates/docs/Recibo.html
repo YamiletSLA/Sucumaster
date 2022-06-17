@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="ISO 8859-1">
+    <title>ERP </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div style="
+    width: 40%;
+    margin: auto;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    font-weight: bolder;
+    color: rgb(0, 128, 0) !important;">
+
+        <div>ZARKET - Sucumaster </div>
+    </div>
+
+    <div style="
+    text-align: center;
+    ">
+        <h1> <label>Recibo de Venta</label> </h1>
+    </div>
+    <div>
+        <div class="row">
+            <div class="form-group col-sm-12">
+                Producto: {{ventas.producto.nombre}}
+            </div>
+            <div class="form-group col-sm-6">
+                Unidades: {{ventas.cantidad}}
+            </div>
+            <div class="form-group col-sm-6">
+                Precio:{{ventas.producto.precio}}
+            </div>
+            <div class="form-group col-sm-6">
+                Total: {{ventas.producto.precio * ventas.cantidad}}
+            </div>
+            <div class="form-group col-sm-6">
+                Fecha de registro: {{ventas.fecha}}
+            </div>
+
+    </div>
+   </div>
+</body>
+</html>

@@ -1,16 +1,24 @@
 from datetime import timedelta
 from urllib import request
 
-from flask import Flask,render_template,request,redirect,url_for,flash,session,abort
+from flask import Flask,render_template,request,redirect,url_for,flash,session,abort, make_response
 from flask_bootstrap import Bootstrap
-from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, detalleVenta, Clientes, Especiales, Estante
 from flask_login import login_required,login_user,logout_user,current_user,LoginManager
 import json
+import pdfkit
+
+import os
+import pdfkit
+from jinja2 import Environment, FileSystemLoader
+ruta= os.path.join(os.getcwd())
 
 app = Flask(__name__)
 Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@localhost/sucumaster'
-app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@localhost/sucumaster'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://userSucuMaster:hola.123@localhost:3306/sucumaster'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@127.0.0.1:3306/sucumaster'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:root@localhost:3306/sucumaster'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.secret_key='Cl4v3'
 #Implementación de la gestion de usuarios con flask-login
@@ -154,6 +162,12 @@ def modificarUsuario():
 
     else:
         return redirect(url_for('mostrar_login'))
+
+######
+
+
+
+######
 #PRODUCTOS
 
 @app.route("/productos")
@@ -185,19 +199,29 @@ def consultarProductosPorCategoria(id):
 
 @app.route('/producto/<int:id>')
 def consultarProducto(id):
-    if current_user.is_authenticated and  current_user.is_admin():
-        prod=Producto()
-        prod.consultaIndividual(id)
-        return render_template('productos/editarP.html',prod=prod.consultaIndividual(id))
+    if current_user.is_authenticated and  current_user.is_admin() or current_user.is_vendedor():
+        prod = Producto()
+        prod = prod.consultaIndividual(id)
+        dict_producto = {"idProducto": prod.idProducto, "nombre": prod.nombre, "descripcion": prod.descripcion,
+                         "precio": prod.precio, "existencia": prod.existencia}
+        return json.dumps(dict_producto)
     else:
-        msg={"estatus":"error","mensaje":"Debes iniciar sesion"}
+        msg = {"estatus": "error", "mensaje": "Debes iniciar sesion"}
         return json.dumps(msg)
+
+@app.route('/producto/ver/<int:id>')
+def consultarProd(id):
+    if current_user.is_authenticated:
+        prod=Producto()
+        return render_template('productos/editarP.html', prod=prod.consultaIndividual(id))
+    else:
+        return redirect(url_for('mostrar_login'))
 
 @app.route('/Productos/nuevo')
 @login_required
 def nuevoProducto():
-    if current_user.is_authenticated and current_user.is_admin():
-            return render_template('productos/Registrar.html')
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista():
+            return render_template('productos/agregarP.html')
     else:
         abort(404)
 
@@ -206,7 +230,7 @@ def nuevoProducto():
 def agregarProducto():
     try:
         if current_user.is_authenticated:
-            if current_user.is_admin():
+            if current_user.is_admin() or current_user.is_almacenista():
                 try:
                     prod=Producto()
                     prod.idCategorias=request.form['categoria']
@@ -214,6 +238,7 @@ def agregarProducto():
                     prod.descripcion=request.form['desc']
                     prod.existencia = request.form['exist']
                     prod.precio=request.form['precio']
+                    prod.estatus = 'Activo'
                     prod.agregar()
                     flash('¡ Producto agregada con exito !')
                 except:
@@ -230,27 +255,28 @@ def agregarProducto():
 @app.route('/Productos/editar',methods=['POST'])
 @login_required
 def editarProducto():
-    if current_user.is_authenticated and current_user.is_admin():
-        try:
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista():
+       try:
             prod=Producto()
             prod.idCategorias=request.form['idCategorias']
             prod.nombre=request.form['nombre']
             prod.descripcion = request.form['desc']
             prod.existencia = request.form['exist']
             prod.precio = request.form['precio']
+            prod.estatus = request.form['estatus']
+            prod.estatus = request.values.get("estatus", "Inactivo")
             prod.editar()
             flash('¡ Producto editado con exito !')
-        except:
-            flash('¡ Error al editar el producto !')
-
-        return redirect(url_for('consultarProductos'))
+       except:
+         flash('¡ Error al editar el producto !')
+       return redirect(url_for('consultarProductos'))
     else:
         return redirect(url_for('mostrar_login'))
 
 @app.route('/Productos/eliminar/<int:id>')
 @login_required
 def eliminarProducto(id):
-    if current_user.is_authenticated and current_user.is_admin():
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista():
         try:
             prod=Producto()
             prod.eliminar(id)
@@ -272,7 +298,7 @@ def consultaCategorias():
 @app.route('/Categorias/nueva')
 @login_required
 def nuevaCategoria():
-    if current_user.is_authenticated and current_user.is_admin():
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista():
             return render_template('categorias/agregar.html')
     else:
         abort(404)
@@ -282,7 +308,7 @@ def nuevaCategoria():
 def agregarCategoria():
     try:
         if current_user.is_authenticated:
-            if current_user.is_admin():
+            if current_user.is_admin() or current_user.is_almacenista():
                 try:
                     cat=Categoria()
                     cat.nombre=request.form['nombre']
@@ -303,7 +329,7 @@ def agregarCategoria():
 @app.route('/Categorias/<int:id>')
 @login_required
 def consultarCategoria(id):
-    if current_user.is_authenticated and current_user.is_admin():
+    if current_user.is_authenticated:
         cat=Categoria()
         return render_template('categorias/editar.html',cat=cat.consultaIndividual(id))
     else:
@@ -313,7 +339,7 @@ def consultarCategoria(id):
 @app.route('/Categorias/editar',methods=['POST'])
 @login_required
 def editarCategoria():
-    if current_user.is_authenticated and current_user.is_admin():
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_almacenista:
         try:
             cat=Categoria()
             cat.idCategorias=request.form['id']
@@ -347,8 +373,8 @@ def eliminarCategoria(id):
 
 @app.route('/Pedidos')
 def consultarPedidos():
-    ped=Pedidos()
-    return render_template('pedidos/consultaGeneral.html',pedidos=ped.consultaGeneral())
+    ped=detalleVenta()
+    return render_template('pedidos/consultaGeneral.html',pedidos=ped.consultaGeneralDV())
 
 @app.route('/Pedidos/agregar',methods=['post'])
 @login_required
@@ -357,14 +383,12 @@ def agregarPedidos():
         if current_user.is_authenticated:
             if current_user.is_authenticated:
                 try:
-                    ped=Pedidos()
-                    ped.idComprador=request.form['idComprador']
-                    ped.idVendedor = request.form['idVendedor']
-                    ped.idTarjeta = request.form['idTarjeta']
+                    ped=detalleVenta()
+                    ped.idUsuario=request.form['idUsuario']
+                    ped.idVentas = request.form['idVentas']
                     ped.fechaRegistro = request.form['fechaRegistro']
-                    ped.fechaAtencion = request.form['fechaAtencion']
+                    ped.fechaRecepcion = request.form['fechaRecepción']
                     ped.fechaCierre = request.form['fechaCierre']
-                    ped.fechaRecepcion = request.form['fechaRecepcion']
                     ped.total = request.form['total']
                     ped.estatus='Pendiente'
                     ped.agregar()
@@ -385,7 +409,7 @@ def agregarPedidos():
 @login_required
 def consultarPedido(id):
     if current_user.is_authenticated:
-        ped=Pedidos()
+        ped=detalleVenta()
         return render_template('pedidos/editar.html',ped=ped.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
@@ -396,13 +420,11 @@ def consultarPedido(id):
 def editarPedido():
     if current_user.is_authenticated:
         try:
-            ped=Pedidos()
+            ped=detalleVenta()
             ped.idPedido = request.form['idPedido']
-            ped.idComprador = request.form['idComprador']
-            ped.idVendedor = request.form['idVendedor']
-            ped.idTarjeta = request.form['idTarjeta']
+            ped.idUsuario = request.form['idUsuario']
+            ped.idVentas = request.form['idVentas']
             ped.fechaRegistro = request.form['fechaRegistro']
-            ped.fechaAtencion = request.form['fechaAtencion']
             ped.fechaCierre = request.form['fechaCierre']
             ped.fechaRecepcion = request.form['fechaRecepcion']
             ped.total = request.form['total']
@@ -421,7 +443,7 @@ def editarPedido():
 def eliminarPedido(id):
     if current_user.is_authenticated:
         try:
-            ped=Pedidos()
+            ped=detalleVenta()
             ped.eliminar(id)
             flash('Pedido eliminado con exito')
         except:
@@ -444,7 +466,7 @@ def error_500(e):
 @app.route('/TipoPago')
 @login_required
 def consultarTP():
-    if current_user.is_authenticated and current_user.is_admin():
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor:
         ti = tipoPago()
         return render_template('/TipoPago/consultaTP.html',tipopago = ti.consultarTP())
     else:
@@ -566,13 +588,14 @@ def eliminarTransporte(id):
 @app.route('/Venta/agregar/<data>',methods=['get'])
 def agregarProductoVenta(data):
     msg=''
-    if current_user.is_authenticated and current_user.is_admin():
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor():
         datos=json.loads(data)
-        carrito=Ventas
-        carrito.idProducto=datos['idProducto']
-        carrito.idUsuario=current_user.idUsuario
-        carrito.cantidad=datos['cantidad']
-        carrito.agregarVenta()
+        v=Ventas()
+        v.idProducto=datos['idProducto']
+        v.idUsuario=current_user.idUsuario
+        v.cantidad=datos['cantidad']
+        v.total=datos['total']
+        v.agregarVenta()
         msg={'estatus':'ok','mensaje':'Producto agregado a la venta.'}
     else:
         msg = {"estatus": "error", "mensaje": "Debes iniciar sesion"}
@@ -582,27 +605,27 @@ def agregarProductoVenta(data):
 @login_required
 def consultarVenta():
     if current_user.is_authenticated:
-        carrito = Ventas()
-        return render_template('carrito/consultaGeneral.html',venta=carrito.consultaGeneralCar(current_user.idUsuario))
+        v = Ventas()
+        return render_template('Ventas/consultaGeneral.html',venta=v.consultaGeneral())
     else:
         return redirect(url_for('mostrar_login'))
 
-@app.route('/Venta/consultacarrito/<int:id>')
+@app.route('/Venta/consultaventa/<int:id>')
 @login_required
 def consultaVenta(id):
-    carrito = Ventas()
-    if current_user.is_authenticated and current_user.is_admin():
-        return render_template('carrito/editarCarrito.html', ventas=carrito.consultaIndividuall(id))
+    v = Ventas()
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor():
+        return render_template('Ventas/editarV.html', ventas=v.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
 
 @app.route('/Venta/editar', methods=['POST'])
 @login_required
 def editarVenta():
-    if current_user.is_authenticated and current_user.is_admin():
+    if current_user.is_authenticated and current_user.is_admin() or current_user.is_vendedor():
         try:
             car = Ventas()
-            car.idCarrito = request.form['idCarrito']
+            car.idVentas = request.form['id']
             car.idUsuario = request.form['idUser']
             car.idProducto = request.form['idProd']
             car.fecha = request.form['fecha']
@@ -611,22 +634,22 @@ def editarVenta():
             car.editar()
             flash('¡ Carrito editado con exito !')
         except:
-            flash('¡ Error al editar el carrito !')
-        return redirect(url_for('consultarCesta'))
+            flash('¡ Error al editar el Ventas !')
+        return redirect(url_for('consultarVenta'))
     else:
         return redirect(url_for('mostrar_login'))
 
 @app.route('/Venta/eliminar/<int:id>')
 @login_required
 def eliminarCarrito(id):
-    if current_user.is_authenticated and current_user.is_comprador():
+    if current_user.is_authenticated and current_user.is_vendedor() or current_user.is_admin():
         try:
             carrito=Ventas()
             carrito.eliminarProductoDeVenta(id)
-            flash('Elemento del carrito eliminada con exito')
+            flash('Elemento del Ventas eliminada con exito')
         except:
-            flash('Error al eliminar el elemento del carrito')
-        return redirect(url_for('consultarCesta'))
+            flash('Error al eliminar el elemento del Ventas')
+        return redirect(url_for('consultarVenta'))
     else:
         return redirect(url_for('mostrar_login'))
 
@@ -635,8 +658,8 @@ def eliminarCarrito(id):
 @app.route('/Pedidos/verpedidos/detallespedidos')
 @login_required
 def consultarDetallePedidos():
-   detped=DetallePedidos()
-   return render_template('/detallepedidos/consultaGeneral.html',detallepedidos = detped.consultaDetallesPedido())
+   detped=detalleVenta()
+   return render_template('/detallepedidos/consultaGeneral.html',detallepedidos = detped.consultaDV())
 
 
 @app.route('/Pedidos/verpedidos/detallespedidos/nuevo')
@@ -654,9 +677,10 @@ def agregarDetallePedidos():
         if current_user.is_authenticated:
             if current_user.is_authenticated:
                 try:
-                    detped=DetallePedidos()
-                    detped.idPedido=request.form['idPedido']
-                    detped.idProducto=request.form['idProducto']
+                    detped=detalleVenta()
+                    detped.idDetalleVenta=request.form['idDetalleVenta']
+                    detped.idUsuario=request.form['idUsuario']
+                    detped.idVentas=request.form['idVentas']
                     detped.precio=request.form['precio']
                     detped.cantidadPedida=request.form['cantidadPedida']
                     detped.cantidadEnviada = request.form['cantidadEnviada']
@@ -681,7 +705,7 @@ def agregarDetallePedidos():
 @login_required
 def modDetallePedido(id):
     if current_user.is_authenticated:
-        detped=DetallePedidos()
+        detped=detalleVenta()
         return render_template('/detallepedidos/editar.html',detped=detped.consultaIndividuall(id))
     else:
         return redirect(url_for('mostrar_login'))
@@ -691,10 +715,9 @@ def modDetallePedido(id):
 def editarDetallePedidos():
     if current_user.is_authenticated:
         try:
-            detped = DetallePedidos()
-            detped.idDetalle = request.form['idDetalle']
-            detped.idPedido = request.form['idPedido']
-            detped.idProducto = request.form['idProducto']
+            detped = detalleVenta()
+            detped.idDetalleVenta = request.form['idDetalleVenta']
+            detped.idVentas = request.form['idVentas']
             detped.precio = request.form['precio']
             detped.cantidadPedida = request.form['cantidadPedida']
             detped.cantidadEnviada = request.form['cantidadEnviada']
@@ -717,7 +740,7 @@ def editarDetallePedidos():
 def eliminarDetallePedido(id):
     if current_user.is_authenticated:
         try:
-            detped=DetallePedidos()
+            detped=detalleVenta()
             #paq.eliminacionLogica(id)
             detped.eliminar(id)
             flash('DetallePedidos eliminada con exito')
@@ -863,9 +886,29 @@ def eliminarEstante(id):
     e=Estante()
     e.eliminar(id)
     return render_template('Estante/Consultar.html', estantes=e.consultaGeneral())
+##############pdf
+@app.route('/docNominas/<int:id>')
+def docNominas(id):
+    env = Environment(loader=FileSystemLoader("/templates"))
+    template = env.get_template("/docs/Recibo.html")
+    v = Ventas()
+    v = v.consultaIndividual(id)
 
+    datos={
+        'ventas': v
 
-
+    }
+    html = template.render(datos)
+    file = open(ruta + '/static/docs/Formato-NominaTMP.html', "w")
+    file.write(html)
+    file.close()
+    pdfkit.from_file(ruta + '\static\docs\Formato-NominaTMP.html', ruta + '\static\docs\Formato-Nomina.pdf')
+    pdf = open(ruta + '\static\docs\Formato-Nomina.pdf', "rb")
+    doc = pdf.read()
+    pdf.close()
+    # os.remove(ruta + '\static\docs\Formato-NominaTMP.html')
+    # os.remove(ruta+'\Static\docs\Formato-Nomina.pdf')
+    return doc
 if __name__=='__main__':
     db.init_app(app)#Inicializar la BD - pasar la configuración de la url de la BD
     app.run(debug=True)
