@@ -4,7 +4,11 @@ from urllib import request
 from flask import Flask,render_template,request,redirect,url_for,flash,session,abort
 from flask_bootstrap import Bootstrap
 <<<<<<< HEAD
+<<<<<<< HEAD
 from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, detalleVenta, DetallePedidos, Clientes, Especiales, Estante
+=======
+from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante, Almacen
+>>>>>>> 82eec4e935de4d136fdb567ea30c55d6dd0d16d5
 =======
 from modelo.Dao import db, Categoria, Producto, Usuario, tipoPago, Transportes, Ventas, Pedidos, DetallePedidos, Clientes, Especiales, Estante, Almacen
 >>>>>>> 82eec4e935de4d136fdb567ea30c55d6dd0d16d5
